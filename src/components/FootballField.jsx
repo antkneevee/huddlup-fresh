@@ -1,0 +1,337 @@
+import React, { useRef, useEffect } from 'react';
+import {
+  Stage,
+  Layer,
+  Path,
+  Circle,
+  Rect,
+  Ellipse,
+  Star,
+  Arrow,
+  Text,
+  Group
+} from 'react-konva';
+import { line as d3Line, curveBasis, curveLinear } from 'd3-shape';
+
+function pointsToXY(points) {
+  const arr = [];
+  for (let i = 0; i < points.length - 1; i += 2) {
+    arr.push({ x: points[i], y: points[i + 1] });
+  }
+  return arr;
+}
+
+const FootballField = ({
+  players,
+  setPlayers,
+  setSelectedPlayerIndex,
+  routes,
+  setRoutes,
+  selectedPlayerIndex,
+  setUndoStack,
+  notes,
+  setNotes,
+  selectedRouteIndex,
+  setSelectedRouteIndex,
+  handlePointDrag,
+  stageRef
+}) => {
+  const width = 800;
+  const height = 600;
+  const lineOfScrimmageY = height - 250;
+  const yardLineSpacing = 55;
+
+  const localStageRef = useRef(null);
+  const layerRef = useRef(null);
+
+  useEffect(() => {
+    if (localStageRef.current && stageRef) {
+      stageRef.current = localStageRef.current;
+    }
+  }, [stageRef]);
+
+  useEffect(() => {
+    if (layerRef.current) {
+      layerRef.current.batchDraw();
+    }
+  }, [players, routes, notes]);
+
+  const lines = [];
+  lines.push({
+    points: [0, lineOfScrimmageY, width, lineOfScrimmageY],
+    stroke: 'black',
+    strokeWidth: 3
+  });
+
+  for (let y = lineOfScrimmageY - yardLineSpacing * 2; y >= 0; y -= yardLineSpacing * 2) {
+    lines.push({
+      points: [0, y, width, y],
+      stroke: '#ccc',
+      strokeWidth: 1
+    });
+  }
+
+  for (let y = lineOfScrimmageY + yardLineSpacing * 2; y <= height; y += yardLineSpacing * 2) {
+    lines.push({
+      points: [0, y, width, y],
+      stroke: '#ccc',
+      strokeWidth: 1
+    });
+  }
+
+  const dragBoundFunc = (pos) => {
+    const radius = 30;
+    const newX = Math.max(radius, Math.min(width - radius, pos.x));
+    const newY = Math.max(radius, Math.min(height - radius, pos.y));
+    return { x: newX, y: newY };
+  };
+
+  const handleDragEnd = (e, index) => {
+    const updatedPlayers = [...players];
+    updatedPlayers[index].x = e.target.x();
+    updatedPlayers[index].y = e.target.y();
+    setPlayers(updatedPlayers);
+  };
+
+  const handleClick = (index) => {
+    setSelectedPlayerIndex(index);
+    setSelectedRouteIndex(null);
+  };
+
+  const handleStageClick = (e) => {
+    const clickedOnEmpty = e.target === e.target.getStage();
+    if (clickedOnEmpty && selectedPlayerIndex !== null) {
+      const stage = e.target.getStage();
+      const pointerPosition = stage.getPointerPosition();
+      if (!pointerPosition) return;
+
+      const { x, y } = pointerPosition;
+      const selectedPlayer = players[selectedPlayerIndex];
+      const startX = selectedPlayer.x;
+      const startY = selectedPlayer.y;
+
+      setUndoStack((prev) => [
+        ...prev,
+        {
+          routes: JSON.parse(JSON.stringify(routes))
+        }
+      ]);
+
+      let newRoutes = [...routes];
+
+      const lastRoute = newRoutes.length > 0 ? newRoutes[newRoutes.length - 1] : null;
+      if (
+        lastRoute &&
+        lastRoute.playerId === selectedPlayer.id &&
+        !lastRoute.finished
+      ) {
+        lastRoute.points.push(x, y);
+      } else {
+        newRoutes.push({
+          playerId: selectedPlayer.id,
+          points: [startX, startY, x, y],
+          color: selectedPlayer.fill,
+          style: 'solid',
+          smooth: false,
+          endMarker: 'arrow',
+          showLastSegment: true,
+          finished: false,
+          thickness: 3
+        });
+      }
+
+      setRoutes(newRoutes);
+    }
+  };
+
+  const handleRouteClick = (e, index) => {
+    e.cancelBubble = true;
+    setSelectedRouteIndex(index);
+    setSelectedPlayerIndex(null);
+  };
+
+  return (
+    <Stage
+      ref={localStageRef}
+      width={width}
+      height={height}
+      className="bg-white border border-gray-300"
+      onClick={handleStageClick}
+    >
+      <Layer ref={layerRef}>
+        {/* Field Lines */}
+        {lines.map((line, index) => (
+          <Path
+            key={index}
+            data={`M${line.points[0]},${line.points[1]} L${line.points[2]},${line.points[3]}`}
+            stroke={line.stroke}
+            strokeWidth={line.strokeWidth}
+          />
+        ))}
+
+        {/* Routes */}
+        {routes.map((route, index) => {
+          const isSelected = selectedRouteIndex === index;
+          const { points, color, style, endMarker, smooth, thickness } = route;
+
+          let d3Path = '';
+          if (points.length >= 4) {
+            const pointsArray = pointsToXY([...points]);
+            if (smooth) {
+              const lastPoint = pointsArray[pointsArray.length - 1];
+              // Duplicate the last point twice to help smooth the end segment
+              pointsArray.push({ x: lastPoint.x, y: lastPoint.y });
+              pointsArray.push({ x: lastPoint.x, y: lastPoint.y });
+            }
+
+            const lineGenerator = d3Line()
+              .x((d) => d.x)
+              .y((d) => d.y)
+              .curve(smooth ? curveBasis : curveLinear);
+
+            d3Path = lineGenerator(pointsArray);
+          }
+
+          return (
+            <React.Fragment key={index}>
+              {d3Path && (
+                <Path
+                  data={d3Path}
+                  stroke={color}
+                  strokeWidth={thickness || 3}
+                  dash={style === 'dashed' ? [10, 10] : []}
+                  hitStrokeWidth={20}
+                  onClick={(e) => handleRouteClick(e, index)}
+                />
+              )}
+              {endMarker === 'arrow' && points.length >= 4 && (
+                <Arrow
+                  points={points.slice(-4)}
+                  stroke={color}
+                  fill={color}
+                  pointerLength={10}
+                  pointerWidth={10}
+                  strokeWidth={thickness || 3}
+                />
+              )}
+              {isSelected &&
+                points.map((_, i) => {
+                  if (i % 2 !== 0) return null;
+                  const x = points[i];
+                  const y = points[i + 1];
+                  return (
+                    <Circle
+                      key={`${index}-pt-${i}`}
+                      x={x}
+                      y={y}
+                      radius={6}
+                      fill="#FFD700"
+                      stroke="#000"
+                      strokeWidth={1}
+                      draggable
+                      onDragMove={(e) => {
+                        handlePointDrag(index, i / 2, e.target.x(), e.target.y());
+                      }}
+                    />
+                  );
+                })}
+            </React.Fragment>
+          );
+        })}
+
+        {/* Notes */}
+        {notes.map((note, index) => (
+          <Text
+            key={index}
+            x={note.x}
+            y={note.y}
+            text={note.text}
+            fontSize={note.fontSize}
+            fill={note.fontColor}
+            fontStyle={note.bold ? 'bold' : 'normal'}
+            stroke={note.border ? '#000' : null}
+            strokeWidth={note.border ? 1 : 0}
+            draggable
+            onDragEnd={(e) => {
+              const updatedNotes = [...notes];
+              updatedNotes[index].x = e.target.x();
+              updatedNotes[index].y = e.target.y();
+              setNotes(updatedNotes);
+            }}
+          />
+        ))}
+
+        {/* Players */}
+        {players.map((player, index) => (
+          <Group
+            key={index}
+            x={player.x}
+            y={player.y}
+            draggable
+            dragBoundFunc={dragBoundFunc}
+            onDragEnd={(e) => handleDragEnd(e, index)}
+            onClick={() => handleClick(index)}
+          >
+            {player.shape === 'circle' && (
+              <Circle
+                x={0}
+                y={0}
+                radius={30}
+                fill={player.fill}
+                stroke={player.border ? '#000' : null}
+                strokeWidth={player.border ? 2 : 0}
+              />
+            )}
+            {player.shape === 'square' && (
+              <Rect
+                x={-30}
+                y={-30}
+                width={60}
+                height={60}
+                fill={player.fill}
+                stroke={player.border ? '#000' : null}
+                strokeWidth={player.border ? 2 : 0}
+              />
+            )}
+            {player.shape === 'oval' && (
+              <Ellipse
+                x={0}
+                y={0}
+                radiusX={30}
+                radiusY={20}
+                fill={player.fill}
+                stroke={player.border ? '#000' : null}
+                strokeWidth={player.border ? 2 : 0}
+              />
+            )}
+            {player.shape === 'star' && (
+              <Star
+                x={0}
+                y={0}
+                numPoints={5}
+                innerRadius={15}
+                outerRadius={30}
+                fill={player.fill}
+                stroke={player.border ? '#000' : null}
+                strokeWidth={player.border ? 2 : 0}
+              />
+            )}
+            <Text
+              text={player.id}
+              fontSize={24}
+              fill={player.textColor}
+              fontStyle="bold"
+              align="center"
+              offsetX={12}
+              offsetY={12}
+              x={3}
+              y={4}
+            />
+          </Group>
+        ))}
+      </Layer>
+    </Stage>
+  );
+};
+
+export default FootballField;

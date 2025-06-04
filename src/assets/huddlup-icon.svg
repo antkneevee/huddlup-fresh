@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- U Shape -->
+  <path d="M20,20 L20,60 A10,10 0 0 0 80,60 L80,20" fill="none" stroke="black" stroke-width="10"></path>
+  
+  <!-- Stylized horizontal line floating inside the U -->
+  <path d="M30,50 Q50,45 70,50" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"></path>
+</svg>
