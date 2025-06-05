@@ -185,19 +185,9 @@ const PlaybookLibrary = () => {
       }
     }
 
-      const finalizePrint = () => {
-        w.focus();
-        w.print();
-        w.close();
-      };
-
-      // Attach the load listener before writing in case the event fires
-      // quickly after document.close(). Delay printing slightly to ensure
-      // styles are applied.
-      w.addEventListener('load', () => setTimeout(finalizePrint, 100));
-
       w.document.write('</body></html>');
       w.document.close();
+      setTimeout(() => { w.focus(); w.print(); w.close(); }, 300);
 
     setPrintBookId(null);
   };
