@@ -28,7 +28,7 @@ const colorOptions = [
 const shapeOptions = ['circle', 'square', 'oval', 'star'];
 const endMarkerOptions = ['arrow', 'dot', 'T'];
 
-const PlayEditor = ({ loadedPlay }) => {
+const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [players, setPlayers] = useState(initialPlayersTemplate);
   const [routes, setRoutes] = useState([]);
   const [notes, setNotes] = useState([]);

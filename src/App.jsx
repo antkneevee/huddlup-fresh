@@ -6,10 +6,12 @@ import SignIn from './components/SignIn';
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
+import SignInModal from './components/SignInModal';
 import logo from './assets/huddlup_logo_2.svg';
 import { Home, Book, BookOpen } from 'lucide-react';
 
 const AppContent = ({ user }) => {
+
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
 
@@ -54,13 +56,17 @@ const AppContent = ({ user }) => {
               Sign Out
             </button>
           </nav>
+=
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<PlayEditor loadedPlay={selectedPlay} />} />
+          <Route
+            path="/"
+            element={<PlayEditor loadedPlay={selectedPlay} openSignIn={openSignIn} />}
+          />
           <Route path="/library" element={<PlayLibrary onSelectPlay={handleLoadPlay} />} />
           <Route path="/playbooks" element={<PlaybookLibrary />} />
         </Routes>
@@ -84,6 +90,7 @@ const App = () => {
   return (
     <Router>
       <AppContent user={user} />
+
     </Router>
   );
 };
