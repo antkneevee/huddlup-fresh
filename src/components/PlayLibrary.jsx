@@ -1,23 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import AddToPlaybookModal from './AddToPlaybookModal';
 
 const PlayLibrary = ({ onSelectPlay }) => {
   const [plays, setPlays] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(25);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedPlayId, setSelectedPlayId] = useState(null);
 
   useEffect(() => {
     const savedPlays = [];
     for (let key in localStorage) {
       if (key.startsWith('Play-')) {
-        try {
-          const play = JSON.parse(localStorage.getItem(key));
-          savedPlays.push({ id: key, ...play });
-        } catch (e) {
-          // ignore malformed entries
-        }
+        const play = JSON.parse(localStorage.getItem(key));
+        savedPlays.push(play);
       }
     }
     setPlays(savedPlays);
@@ -32,12 +25,6 @@ const PlayLibrary = ({ onSelectPlay }) => {
   });
 
   const displayedPlays = filteredPlays.slice(0, itemsPerPage);
-
-  const handleAddClick = (e, id) => {
-    e.stopPropagation();
-    setSelectedPlayId(id);
-    setShowModal(true);
-  };
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
@@ -89,21 +76,9 @@ const PlayLibrary = ({ onSelectPlay }) => {
                 </span>
               ))}
             </div>
-            <button
-              className="mt-2 bg-blue-600 hover:bg-blue-500 text-white text-xs px-2 py-1 rounded"
-              onClick={(e) => handleAddClick(e, play.id)}
-            >
-              Add to Playbook
-            </button>
           </div>
         ))}
       </div>
-      {showModal && selectedPlayId && (
-        <AddToPlaybookModal
-          playId={selectedPlayId}
-          onClose={() => setShowModal(false)}
-        />
-      )}
     </div>
   );
 };

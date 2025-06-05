@@ -1,4 +1,4 @@
-// src/components/Canvas.jsx
+// src/components/Canvas.js
 import React, { useState } from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 
@@ -24,15 +24,8 @@ const Canvas = () => {
     setLines(lines.concat());
   };
 
-  const handleMouseUp = (e) => {
+  const handleMouseUp = () => {
     setIsDrawing(false);
-    const stage = e.target.getStage();
-    const point = stage.getPointerPosition();
-    if (!point) return;
-    let lastLine = lines[lines.length - 1];
-    lastLine.points = lastLine.points.concat([point.x, point.y]);
-    lines.splice(lines.length - 1, 1, lastLine);
-    setLines(lines.concat());
   };
 
   return (
@@ -40,8 +33,8 @@ const Canvas = () => {
       width={800}
       height={600}
       onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={(e) => handleMouseUp(e)}
+      onMousemove={handleMouseMove}
+      onMouseup={handleMouseUp}
       style={{ background: '#ffffff', border: '1px solid #ccc' }}
     >
       <Layer>
