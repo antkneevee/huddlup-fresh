@@ -107,12 +107,20 @@ const PlaybookLibrary = () => {
     const perPage = options.playsPerPage || plays.length;
     const isWrist = options.type === 'wristband';
     const layout = options.layout || 4;
+
+    // scale down wristbands if they would overflow a standard 8.5" page
+    const maxPageWidth = 8; // leave room for printer margins
+    const totalWidth = layout * options.width;
+    const scale = isWrist && totalWidth > maxPageWidth ? maxPageWidth / totalWidth : 1;
+    const cellWidth = options.width * scale;
+    const cellHeight = options.height * scale;
+
     const style = `
       <style>
         body{margin:0;padding:10px;font-family:sans-serif;}
         .page{page-break-after:always;margin-bottom:20px;}
-        .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${layout}, ${options.width}in);width:${layout * options.width}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
-        .play{position:relative;border:1px solid #000;${isWrist ? `width:${options.width}in;height:${options.height}in;` : 'padding:2px;'}text-align:center;}
+        .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${layout}, ${cellWidth}in);width:${layout * cellWidth}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
+        .play{position:relative;border:1px solid #000;${isWrist ? `width:${cellWidth}in;height:${cellHeight}in;` : 'padding:2px;'}text-align:center;}
         .label{position:absolute;top:0;left:0;display:flex;width:100%;}
         .num{background:#000;color:#fff;padding:2px 4px;font-size:10px;display:flex;justify-content:center;align-items:center;}
         .title{background:#ddd;color:#000;padding:2px 4px;font-size:10px;flex:1;display:flex;align-items:center;}
