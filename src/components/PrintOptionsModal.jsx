@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+export const THICKNESS_MULTIPLIER = 0.75;
+
+
 const PrintOptionsModal = ({ onClose, onPrint }) => {
   const [type, setType] = useState('wristband');
   const [layout, setLayout] = useState('4');
@@ -19,6 +22,8 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
         playsPerPage: parseInt(playsPerPage, 10),
         includeTitle,
         includeNumber,
+                thicknessMultiplier: THICKNESS_MULTIPLIER,
+
       });
     }
   };

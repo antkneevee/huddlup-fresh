@@ -75,20 +75,14 @@ const PlayEditor = ({ loadedPlay }) => {
     setSavedState(null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!playName.trim()) {
       alert('Please provide a name for your play.');
       return;
     }
+const handleSave = async () => {
+  const dataURL = await getExportDataUrl(4 / 3);
 
-    let dataURL = '';
-    if (stageRef && stageRef.current) {
-      dataURL = stageRef.current.toDataURL({
-        pixelRatio: 4,
-        mimeType: 'image/png',
-        backgroundColor: 'white'
-      });
-    }
 
     const playKey = `Play-${Date.now()}`;
     const playData = {
@@ -201,25 +195,43 @@ const PlayEditor = ({ loadedPlay }) => {
     }
   };
 
-  const getExportDataUrl = (ratio) => {
+    const dataURL = await getExportDataUrl(4 / 3);
     return new Promise((resolve) => {
       if (!stageRef.current) {
         resolve(null);
         return;
       }
-      const dataURL = stageRef.current.toDataURL({
-        pixelRatio: 4,
-        mimeType: 'image/png',
-        backgroundColor: 'white'
-      });
-      const img = new Image();
-      img.src = dataURL;
-      img.onload = () => {
-        const stageW = img.width;
-        const stageH = img.height;
-        const stageRatio = stageW / stageH;
-        let cropW = stageW;
-        let cropH = stageH;
+      
+      const originals = routes.map(r => r.thickness || 3);
+
+      if (thicknessMultiplier !== 1) {
+        routes.forEach((route, idx) => {
+          route.thickness = originals[idx] * thicknessMultiplier;
+        });
+        stageRef.current.draw();
+      }
+
+      const capture = () => {
+        const dataURL = stageRef.current.toDataURL({
+          pixelRatio: 4,
+          mimeType: 'image/png',
+          backgroundColor: 'white'
+        });
+        if (thicknessMultiplier !== 1) {
+          routes.forEach((route, idx) => {
+            route.thickness = originals[idx];
+          });
+          stageRef.current.draw();
+        }
+
+        const img = new Image();
+        img.src = dataURL;
+        img.onload = () => {
+          const stageW = img.width;
+          const stageH = img.height;
+          const stageRatio = stageW / stageH;
+          let cropW = stageW;
+          let cropH = stageH;
         let cropX = 0;
         let cropY = 0;
         if (stageRatio > ratio) {
@@ -231,6 +243,12 @@ const PlayEditor = ({ loadedPlay }) => {
           cropH = stageW / ratio;
           cropY = (stageH - cropH) / 2;
         }
+
+const backfieldCut = 40;
+        if (cropY + cropH > stageH - backfieldCut) {
+          cropH = stageH - backfieldCut - cropY;
+        }
+        
         const labelH = 120;
         const canvas = document.createElement('canvas');
         canvas.width = cropW;
@@ -248,6 +266,13 @@ const PlayEditor = ({ loadedPlay }) => {
         ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, labelH, cropW, cropH);
         resolve(canvas.toDataURL('image/png'));
       };
+       };
+
+      if (thicknessMultiplier !== 1) {
+        requestAnimationFrame(capture);
+      } else {
+        capture();
+      }
     });
   };
 
