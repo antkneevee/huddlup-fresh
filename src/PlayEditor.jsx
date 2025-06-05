@@ -40,6 +40,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [playTags, setPlayTags] = useState('');
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [savedState, setSavedState] = useState(null);
+  const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
 
   useEffect(() => {
@@ -425,6 +426,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           setSelectedNoteIndex={setSelectedNoteIndex}
           handlePointDrag={handlePointDrag}
           stageRef={stageRef}
+          defenseFormation={defenseFormation}
         />
 
         <div className="flex flex-col gap-4 w-60">
@@ -609,18 +611,34 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             ) : (
               <p className="text-sm">Select a note to edit.</p>
             )}
-            <button
-              className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded mt-2"
-              onClick={handleAddNote}
-            >
-              Add Note
-            </button>
-          </aside>
+          <button
+            className="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded mt-2"
+            onClick={handleAddNote}
+          >
+            Add Note
+          </button>
+        </aside>
 
-          {/* Save Play */}
-          <aside className="bg-gray-800 p-4 rounded">
-            <h2 className="text-lg font-bold mb-2">Save Play</h2>
-            <input
+        {/* Defense Options */}
+        <aside className="bg-gray-800 p-4 rounded">
+          <h2 className="text-lg font-bold mb-2">Defense Formation</h2>
+          <select
+            value={defenseFormation}
+            onChange={(e) => setDefenseFormation(e.target.value)}
+            className="w-full p-1 rounded text-white bg-gray-700"
+          >
+            <option value="No">No</option>
+            <option value="1-3-1">1-3-1</option>
+            <option value="3-2">3-2</option>
+            <option value="4-1">4-1</option>
+            <option value="2-3">2-3</option>
+          </select>
+        </aside>
+
+        {/* Save Play */}
+        <aside className="bg-gray-800 p-4 rounded">
+          <h2 className="text-lg font-bold mb-2">Save Play</h2>
+          <input
               type="text"
               value={playName}
               onChange={(e) => setPlayName(e.target.value)}
