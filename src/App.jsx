@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
+import SignIn from './components/SignIn';
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
@@ -7,7 +10,7 @@ import SignInModal from './components/SignInModal';
 import logo from './assets/huddlup_logo_2.svg';
 import { Home, Book, BookOpen } from 'lucide-react';
 
-const AppContent = ({ user, onSignInRequest }) => {
+const AppContent = ({ user }) => {
 
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
@@ -26,43 +29,34 @@ const AppContent = ({ user, onSignInRequest }) => {
             <img src={logo} alt="HuddlUp Logo" className="h-8" />
             <h1 className="text-xl font-bold">huddlup</h1>
           </div>
-          <div className="flex items-center gap-4">
-
-            <nav className="flex flex-wrap gap-2">
-              <Link
-                to="/"
-                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-              >
-                <Home className="w-4 h-4 mr-1" /> Editor
-              </Link>
-              <Link
-                to="/library"
-                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-              >
-                <Book className="w-4 h-4 mr-1" /> Play Library
-              </Link>
-              <Link
-                to="/playbooks"
-                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-              >
-                <BookOpen className="w-4 h-4 mr-1" /> Playbooks
-              </Link>
-            </nav>
-            {user ? (
-              <div className="flex items-center gap-2">
-                <span>{user.email}</span>
-                <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded">Sign Out</button>
-              </div>
-            ) : (
-              <button
-                className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-                onClick={onSignInRequest}
-
-              >
-                Sign In
-              </button>
-            )}
-          </div>
+          <nav className="flex flex-wrap gap-2 items-center">
+            <Link
+              to="/"
+              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              <Home className="w-4 h-4 mr-1" /> Editor
+            </Link>
+            <Link
+              to="/library"
+              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              <Book className="w-4 h-4 mr-1" /> Play Library
+            </Link>
+            <Link
+              to="/playbooks"
+              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              <BookOpen className="w-4 h-4 mr-1" /> Playbooks
+            </Link>
+            <span className="mx-2 text-sm">{user.email}</span>
+            <button
+              onClick={() => signOut(auth)}
+              className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              Sign Out
+            </button>
+          </nav>
+=
         </div>
       </header>
 
@@ -81,10 +75,21 @@ const AppContent = ({ user, onSignInRequest }) => {
   );
 };
 
-const App = ({ user, onSignInRequest }) => {
+const App = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, setUser);
+    return unsub;
+  }, []);
+
+  if (!user) {
+    return <SignIn />;
+  }
+
   return (
     <Router>
-      <AppContent user={user} onSignInRequest={onSignInRequest} />
+      <AppContent user={user} />
 
     </Router>
   );
