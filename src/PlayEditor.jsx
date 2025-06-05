@@ -84,6 +84,11 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       return;
     }
 
+    if (!auth.currentUser) {
+      openSignIn();
+      return;
+    }
+
     const dataURL = await getExportDataUrl(4 / 3);
 
     const playKey = `Play-${Date.now()}`;
@@ -100,11 +105,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       image: dataURL
     };
 
-    if (auth.currentUser) {
-      await setDoc(doc(db, 'users', auth.currentUser.uid, 'plays', playKey), playData);
-    } else {
-      localStorage.setItem(playKey, JSON.stringify(playData));
-    }
+    await setDoc(doc(db, 'users', auth.currentUser.uid, 'plays', playKey), playData);
     setShowSaveModal(true);
 
     setSavedState({
