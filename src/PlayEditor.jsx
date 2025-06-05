@@ -90,7 +90,9 @@ const PlayEditor = ({ loadedPlay }) => {
       });
     }
 
+    const playKey = `Play-${Date.now()}`;
     const playData = {
+      id: playKey,
       players,
       routes,
       notes,
@@ -99,7 +101,6 @@ const PlayEditor = ({ loadedPlay }) => {
       image: dataURL
     };
 
-    const playKey = `Play-${Date.now()}`;
     localStorage.setItem(playKey, JSON.stringify(playData));
     setShowSaveModal(true);
 

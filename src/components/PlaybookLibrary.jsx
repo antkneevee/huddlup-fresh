@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 const PlaybookLibrary = () => {
   const [playbooks, setPlaybooks] = useState([]);
@@ -26,6 +27,22 @@ const PlaybookLibrary = () => {
     }
   };
 
+    const movePlay = (bookId, index, direction) => {
+    setPlaybooks((prev) =>
+      prev.map((book) => {
+        if (book.id !== bookId) return book;
+        const ids = [...book.playIds];
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= ids.length) return book;
+        [ids[index], ids[newIndex]] = [ids[newIndex], ids[index]];
+        const updatedBook = { ...book, playIds: ids };
+        localStorage.setItem(bookId, JSON.stringify(updatedBook));
+        return updatedBook;
+      })
+    );
+  };
+
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Playbooks</h1>
@@ -41,11 +58,26 @@ const PlaybookLibrary = () => {
             </button>
           </div>
           <div className="grid grid-cols-4 gap-4">
-            {book.playIds.map((pid) => {
+                      {book.playIds.map((pid, idx) => {
+
               const play = getPlay(pid);
               if (!play) return null;
               return (
-                <div key={pid} className="bg-gray-700 p-2 rounded">
+                                <div key={pid} className="bg-gray-700 p-2 rounded relative">
+                  <div className="absolute top-1 right-1 flex flex-col gap-1">
+                    <button
+                      className="bg-gray-600 text-white rounded p-1"
+                      onClick={() => movePlay(book.id, idx, -1)}
+                    >
+                      <ChevronUp className="w-3 h-3" />
+                    </button>
+                    <button
+                      className="bg-gray-600 text-white rounded p-1"
+                      onClick={() => movePlay(book.id, idx, 1)}
+                    >
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </div>
                   {play.image ? (
                     <img
                       src={play.image}

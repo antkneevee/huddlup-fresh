@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import AddToPlaybookModal from './AddToPlaybookModal';
 
 const PlayLibrary = ({ onSelectPlay }) => {
   const [plays, setPlays] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedPlayId, setSelectedPlayId] = useState(null);
 
   useEffect(() => {
     const savedPlays = [];
     for (let key in localStorage) {
       if (key.startsWith('Play-')) {
-        const play = JSON.parse(localStorage.getItem(key));
-        savedPlays.push(play);
+        try {
+          const play = JSON.parse(localStorage.getItem(key));
+          savedPlays.push({ ...play, id: key });
+        } catch {
+          // ignore bad data
+        }
       }
     }
     setPlays(savedPlays);
@@ -48,12 +55,22 @@ const PlayLibrary = ({ onSelectPlay }) => {
         </select>
       </div>
       <div className="grid grid-cols-4 gap-4">
-        {displayedPlays.map((play, index) => (
+        {displayedPlays.map((play) => (
           <div
-            key={index}
-            className="bg-gray-800 rounded p-2 cursor-pointer hover:bg-gray-700"
+            key={play.id}
+            className="bg-gray-800 rounded p-2 cursor-pointer relative hover:bg-gray-700"
             onClick={() => onSelectPlay(play)}
           >
+            <button
+              className="absolute top-1 right-1 bg-blue-600 text-white text-xs px-2 py-1 rounded"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedPlayId(play.id);
+                setShowAddModal(true);
+              }}
+            >
+              Add
+            </button>
             {play.image ? (
               <img
                 src={play.image}
@@ -79,6 +96,12 @@ const PlayLibrary = ({ onSelectPlay }) => {
           </div>
         ))}
       </div>
+      {showAddModal && (
+        <AddToPlaybookModal
+          playId={selectedPlayId}
+          onClose={() => setShowAddModal(false)}
+        />
+      )}
     </div>
   );
 };
