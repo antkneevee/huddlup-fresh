@@ -142,13 +142,17 @@ const FootballField = ({
 
       let newRoutes = [...routes];
 
-      const lastRoute = newRoutes.length > 0 ? newRoutes[newRoutes.length - 1] : null;
-      if (
-        lastRoute &&
-        lastRoute.playerId === selectedPlayer.id &&
-        !lastRoute.finished
-      ) {
-        lastRoute.points.push(x, y);
+      let targetRoute = null;
+      for (let i = newRoutes.length - 1; i >= 0; i--) {
+        const route = newRoutes[i];
+        if (route.playerId === selectedPlayer.id && !route.finished) {
+          targetRoute = route;
+          break;
+        }
+      }
+
+      if (targetRoute) {
+        targetRoute.points.push(x, y);
       } else {
         newRoutes.push({
           playerId: selectedPlayer.id,
