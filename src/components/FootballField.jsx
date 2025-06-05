@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import Konva from 'konva';
 import {
   Stage,
   Layer,
@@ -64,6 +65,8 @@ const FootballField = ({
 
   const localStageRef = useRef(null);
   const layerRef = useRef(null);
+  const indicatorRef = useRef(null);
+  const animRef = useRef(null);
 
   useEffect(() => {
     if (localStageRef.current && stageRef) {
@@ -76,6 +79,27 @@ const FootballField = ({
       layerRef.current.batchDraw();
     }
   }, [players, routes, notes]);
+
+  useEffect(() => {
+    if (animRef.current) {
+      animRef.current.stop();
+      animRef.current = null;
+    }
+    if (selectedPlayerIndex !== null && indicatorRef.current && layerRef.current) {
+      animRef.current = new Konva.Animation((frame) => {
+        const rotateBy = (frame.timeDiff / 1000) * 180; // degrees per second
+        indicatorRef.current.rotate(rotateBy);
+      }, layerRef.current);
+      animRef.current.start();
+    }
+
+    return () => {
+      if (animRef.current) {
+        animRef.current.stop();
+        animRef.current = null;
+      }
+    };
+  }, [selectedPlayerIndex]);
 
   const lines = [];
   lines.push({
@@ -323,6 +347,18 @@ const FootballField = ({
             onDragEnd={(e) => handleDragEnd(e, index)}
             onClick={() => handleClick(index)}
           >
+            {selectedPlayerIndex === index && (
+              <Circle
+                ref={indicatorRef}
+                x={0}
+                y={0}
+                radius={40}
+                stroke="yellow"
+                strokeWidth={3}
+                dash={[10, 5]}
+                listening={false}
+              />
+            )}
             {player.shape === 'circle' && (
               <Circle
                 x={0}
