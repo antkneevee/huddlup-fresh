@@ -200,6 +200,89 @@ const PlayEditor = ({ loadedPlay }) => {
     }
   };
 
+  const getExportDataUrl = (ratio) => {
+    return new Promise((resolve) => {
+      if (!stageRef.current) {
+        resolve(null);
+        return;
+      }
+      const dataURL = stageRef.current.toDataURL({
+        pixelRatio: 4,
+        mimeType: 'image/png',
+        backgroundColor: 'white'
+      });
+      const img = new Image();
+      img.src = dataURL;
+      img.onload = () => {
+        const stageW = img.width;
+        const stageH = img.height;
+        const stageRatio = stageW / stageH;
+        let cropW = stageW;
+        let cropH = stageH;
+        let cropX = 0;
+        let cropY = 0;
+        if (stageRatio > ratio) {
+          cropH = stageH;
+          cropW = stageH * ratio;
+          cropX = (stageW - cropW) / 2;
+        } else if (stageRatio < ratio) {
+          cropW = stageW;
+          cropH = stageW / ratio;
+          cropY = (stageH - cropH) / 2;
+        }
+        const labelH = 40;
+        const canvas = document.createElement('canvas');
+        canvas.width = cropW;
+        canvas.height = cropH + labelH;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#d1d5db';
+        ctx.fillRect(0, 0, cropW, labelH);
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
+        ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, labelH, cropW, cropH);
+        resolve(canvas.toDataURL('image/png'));
+      };
+    });
+  };
+
+  const handleExport = async (ratio) => {
+    const url = await getExportDataUrl(ratio);
+    if (!url) return;
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${playName || 'play'}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleShare = async () => {
+    const url = await getExportDataUrl(2);
+    if (!url) return;
+    if (navigator.share && navigator.canShare) {
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const file = new File([blob], `${playName || 'play'}.png`, {
+        type: 'image/png'
+      });
+      try {
+        await navigator.share({ files: [file], title: playName || 'Play' });
+        return;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${playName || 'play'}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const isPlaySaved = () => {
     if (!savedState) return false;
     const currentState = JSON.stringify({
@@ -459,7 +542,12 @@ const PlayEditor = ({ loadedPlay }) => {
 
       <div className="w-full bg-gray-800 mt-4">
         <div className="max-w-7xl mx-auto p-4 flex justify-center">
-          <Toolbar onNewPlay={handleNewPlay} onSave={handleSave} onUndo={handleUndo} />
+          <Toolbar
+            onNewPlay={handleNewPlay}
+            onUndo={handleUndo}
+            onExport={handleExport}
+            onShare={handleShare}
+          />
         </div>
       </div>
 
