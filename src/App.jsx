@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
+import SignInModal from './components/SignInModal';
 import logo from './assets/huddlup_logo_2.svg';
 import { Home, Book, BookOpen } from 'lucide-react';
 
 const AppContent = ({ user, onSignInRequest }) => {
+
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
 
@@ -25,6 +27,7 @@ const AppContent = ({ user, onSignInRequest }) => {
             <h1 className="text-xl font-bold">huddlup</h1>
           </div>
           <div className="flex items-center gap-4">
+
             <nav className="flex flex-wrap gap-2">
               <Link
                 to="/"
@@ -54,6 +57,7 @@ const AppContent = ({ user, onSignInRequest }) => {
               <button
                 className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
                 onClick={onSignInRequest}
+
               >
                 Sign In
               </button>
@@ -65,7 +69,10 @@ const AppContent = ({ user, onSignInRequest }) => {
       {/* Main Content */}
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<PlayEditor loadedPlay={selectedPlay} />} />
+          <Route
+            path="/"
+            element={<PlayEditor loadedPlay={selectedPlay} openSignIn={openSignIn} />}
+          />
           <Route path="/library" element={<PlayLibrary onSelectPlay={handleLoadPlay} />} />
           <Route path="/playbooks" element={<PlaybookLibrary />} />
         </Routes>
@@ -78,6 +85,7 @@ const App = ({ user, onSignInRequest }) => {
   return (
     <Router>
       <AppContent user={user} onSignInRequest={onSignInRequest} />
+
     </Router>
   );
 };
