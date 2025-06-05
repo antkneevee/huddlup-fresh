@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { auth, db } from './firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import FootballField from './components/FootballField';
 import Toolbar from './components/Toolbar';
 import { User, ArrowRight, Trash2, StickyNote } from 'lucide-react';
@@ -29,6 +31,7 @@ const shapeOptions = ['circle', 'square', 'oval', 'star'];
 const endMarkerOptions = ['arrow', 'dot', 'T'];
 
 const PlayEditor = ({ loadedPlay, onSignInRequest }) => {
+
   const [players, setPlayers] = useState(initialPlayersTemplate);
   const [routes, setRoutes] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -106,6 +109,7 @@ const PlayEditor = ({ loadedPlay, onSignInRequest }) => {
     };
 
     await setDoc(doc(db, 'plays', playKey), playData);
+
     setShowSaveModal(true);
 
     setSavedState({
