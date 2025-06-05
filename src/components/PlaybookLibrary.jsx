@@ -5,7 +5,7 @@ import PrintOptionsModal from './PrintOptionsModal';
 import { db, auth } from '../firebase';
 import { collection, getDocs, setDoc, doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
 
-const PlaybookLibrary = () => {
+const PlaybookLibrary = ({ user, openSignIn }) => {
   const [playbooks, setPlaybooks] = useState([]);
   const [collapsed, setCollapsed] = useState({});
   const [showPrintModal, setShowPrintModal] = useState(false);
@@ -13,57 +13,43 @@ const PlaybookLibrary = () => {
   const [playsMap, setPlaysMap] = useState({});
 
   useEffect(() => {
+    if (!auth.currentUser) {
+      openSignIn();
+      return;
+    }
     const fetchBooks = async () => {
-      if (auth.currentUser) {
-        const snap = await getDocs(collection(db, 'users', auth.currentUser.uid, 'playbooks'));
-        const arr = [];
-        snap.forEach(d => arr.push(d.data()));
-        arr.sort((a, b) => (a.order || 0) - (b.order || 0));
-        setPlaybooks(arr);
-      } else {
-        const books = [];
-        for (let key in localStorage) {
-          if (key.startsWith('Playbook-')) {
-            try {
-              const book = JSON.parse(localStorage.getItem(key));
-              books.push(book);
-            } catch {
-              // ignore bad data
-            }
-          }
-        }
-        books.sort((a, b) => (a.order || 0) - (b.order || 0));
-        setPlaybooks(books);
-      }
+      const snap = await getDocs(
+        collection(db, 'users', auth.currentUser.uid, 'playbooks')
+      );
+      const arr = [];
+      snap.forEach((d) => arr.push(d.data()));
+      arr.sort((a, b) => (a.order || 0) - (b.order || 0));
+      setPlaybooks(arr);
     };
     fetchBooks();
-  }, []);
+  }, [user, openSignIn]);
 
   useEffect(() => {
+    if (!auth.currentUser) {
+      openSignIn();
+      return;
+    }
     const fetchPlays = async () => {
-      if (auth.currentUser) {
-        const snap = await getDocs(collection(db, 'users', auth.currentUser.uid, 'plays'));
-        const obj = {};
-        snap.forEach(d => {
-          obj[d.id] = d.data();
-        });
-        setPlaysMap(obj);
-      } else {
-        const obj = {};
-        for (let key in localStorage) {
-          if (key.startsWith('Play-')) {
-            try {
-              obj[key] = JSON.parse(localStorage.getItem(key));
-            } catch {
-              // ignore
-            }
-          }
-        }
-        setPlaysMap(obj);
-      }
+      const snap = await getDocs(
+        collection(db, 'users', auth.currentUser.uid, 'plays')
+      );
+      const obj = {};
+      snap.forEach((d) => {
+        obj[d.id] = d.data();
+      });
+      setPlaysMap(obj);
     };
     fetchPlays();
-  }, []);
+  }, [user, openSignIn]);
+
+  if (!auth.currentUser) {
+    return <div className="p-4">Please sign in to view your playbooks.</div>;
+  }
 
   const getPlay = (id) => playsMap[id] || null;
 
