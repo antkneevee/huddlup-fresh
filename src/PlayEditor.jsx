@@ -109,9 +109,9 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     setShowSaveModal(true);
 
     setSavedState({
-      players,
-      routes,
-      notes,
+      players: JSON.parse(JSON.stringify(players)),
+      routes: JSON.parse(JSON.stringify(routes)),
+      notes: JSON.parse(JSON.stringify(notes)),
       name: playName,
       tags: playTags
         .split(',')
@@ -388,14 +388,15 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
 
   const isPlaySaved = () => {
     if (!savedState) return false;
+    const sanitize = (data) => JSON.parse(JSON.stringify(data));
     const currentState = JSON.stringify({
-      players,
-      routes,
-      notes,
+      players: sanitize(players),
+      routes: sanitize(routes),
+      notes: sanitize(notes),
       name: playName,
       tags: playTags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
     });
-    const savedStateString = JSON.stringify(savedState);
+    const savedStateString = JSON.stringify(sanitize(savedState));
     return currentState === savedStateString;
   };
 
