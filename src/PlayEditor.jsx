@@ -207,7 +207,7 @@ const PlayEditor = ({ loadedPlay }) => {
         return;
       }
 
-      const originals = routes.map(r => r.thickness || 3);
+      const originals = routes.map(r => r.thickness || 7);
 
       if (thicknessMultiplier !== 1) {
         routes.forEach((route, idx) => {
@@ -448,13 +448,13 @@ const PlayEditor = ({ loadedPlay }) => {
 
                 <label className="block mt-2 mb-1">Line Thickness</label>
                 <select
-                  value={routes[selectedRouteIndex].thickness || 3}
+                  value={routes[selectedRouteIndex].thickness || 7}
                   onChange={(e) => updateRouteProperty('thickness', parseInt(e.target.value, 10))}
                   className="w-full p-1 rounded text-white bg-gray-700"
                 >
-                  <option value={2}>Thin</option>
-                  <option value={3}>Default</option>
-                  <option value={5}>Thick</option>
+                  <option value={5}>Thin</option>
+                  <option value={7}>Default</option>
+                  <option value={9}>Thick</option>
                 </select>
 
                 <label className="block mt-2 mb-1">End Marker</label>

@@ -159,7 +159,7 @@ const FootballField = ({
           endMarker: 'arrow',
           showLastSegment: true,
           finished: false,
-          thickness: 3
+          thickness: 7
         });
       }
 
@@ -221,7 +221,7 @@ const FootballField = ({
                 <Path
                   data={d3Path}
                   stroke={color}
-                  strokeWidth={thickness || 3}
+                  strokeWidth={thickness || 7}
                   dash={style === 'dashed' ? [10, 10] : []}
                   hitStrokeWidth={20}
                   onClick={(e) => handleRouteClick(e, index)}
@@ -243,7 +243,7 @@ const FootballField = ({
                     fill={color}
                     pointerLength={10}
                     pointerWidth={10}
-                    strokeWidth={thickness || 3}
+                    strokeWidth={thickness || 7}
                   />
                 )
               )}
