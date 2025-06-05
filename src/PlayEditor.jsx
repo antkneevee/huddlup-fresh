@@ -280,15 +280,29 @@ const PlayEditor = ({ loadedPlay }) => {
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Field image
+            ctx.drawImage(
+              img,
+              cropX,
+              cropY,
+              cropW,
+              cropH,
+              0,
+              0,
+              cropW,
+              cropH
+            );
+
             ctx.fillStyle = '#d1d5db';
-            ctx.fillRect(0, 0, cropW, labelH);
+            ctx.fillRect(0, cropH, cropW, labelH);
 
             // Play title
             ctx.fillStyle = '#000';
             ctx.font = 'bold 192px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
+            ctx.fillText(playName || 'Unnamed Play', cropW / 2, cropH + labelH / 2);
 
             // "made with" text and logo
             ctx.font = '192px sans-serif';
@@ -301,26 +315,13 @@ const PlayEditor = ({ loadedPlay }) => {
             const spacing = 20;
             const rightMargin = 40;
             const startX = cropW - mwWidth - logoWidth - spacing - rightMargin;
-            ctx.fillText(madeWith, startX, labelH / 2);
+            ctx.fillText(madeWith, startX, cropH + labelH / 2);
             ctx.drawImage(
               logoImg,
               startX + mwWidth + spacing,
-              labelH / 2 - logoHeight / 2,
+              cropH + labelH / 2 - logoHeight / 2,
               logoWidth,
               logoHeight
-            );
-
-            // Field image
-            ctx.drawImage(
-              img,
-              cropX,
-              cropY,
-              cropW,
-              cropH,
-              0,
-              labelH,
-              cropW,
-              cropH
             );
 
             resolve(canvas.toDataURL('image/png'));
