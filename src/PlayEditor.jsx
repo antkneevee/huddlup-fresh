@@ -80,9 +80,8 @@ const PlayEditor = ({ loadedPlay }) => {
       alert('Please provide a name for your play.');
       return;
     }
-const handleSave = async () => {
-  const dataURL = await getExportDataUrl(4 / 3);
 
+    const dataURL = await getExportDataUrl(4 / 3);
 
     const playKey = `Play-${Date.now()}`;
     const playData = {
@@ -91,7 +90,10 @@ const handleSave = async () => {
       routes,
       notes,
       name: playName,
-      tags: playTags.split(',').map(tag => tag.trim()).filter(tag => tag !== ''),
+      tags: playTags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag !== ''),
       image: dataURL
     };
 
@@ -103,7 +105,10 @@ const handleSave = async () => {
       routes,
       notes,
       name: playName,
-      tags: playTags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
+      tags: playTags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag !== '')
     });
   };
 
@@ -195,13 +200,13 @@ const handleSave = async () => {
     }
   };
 
-    const dataURL = await getExportDataUrl(4 / 3);
-    return new Promise((resolve) => {
+  const getExportDataUrl = async (ratio, thicknessMultiplier = 1) => {
+    return new Promise(resolve => {
       if (!stageRef.current) {
         resolve(null);
         return;
       }
-      
+
       const originals = routes.map(r => r.thickness || 3);
 
       if (thicknessMultiplier !== 1) {
@@ -217,6 +222,7 @@ const handleSave = async () => {
           mimeType: 'image/png',
           backgroundColor: 'white'
         });
+
         if (thicknessMultiplier !== 1) {
           routes.forEach((route, idx) => {
             route.thickness = originals[idx];
@@ -232,41 +238,52 @@ const handleSave = async () => {
           const stageRatio = stageW / stageH;
           let cropW = stageW;
           let cropH = stageH;
-        let cropX = 0;
-        let cropY = 0;
-        if (stageRatio > ratio) {
-          cropH = stageH;
-          cropW = stageH * ratio;
-          cropX = (stageW - cropW) / 2;
-        } else if (stageRatio < ratio) {
-          cropW = stageW;
-          cropH = stageW / ratio;
-          cropY = (stageH - cropH) / 2;
-        }
+          let cropX = 0;
+          let cropY = 0;
 
-const backfieldCut = 40;
-        if (cropY + cropH > stageH - backfieldCut) {
-          cropH = stageH - backfieldCut - cropY;
-        }
-        
-        const labelH = 120;
-        const canvas = document.createElement('canvas');
-        canvas.width = cropW;
-        canvas.height = cropH + labelH;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#d1d5db';
-        ctx.fillRect(0, 0, cropW, labelH);
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 96px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
-        ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, labelH, cropW, cropH);
-        resolve(canvas.toDataURL('image/png'));
+          if (stageRatio > ratio) {
+            cropH = stageH;
+            cropW = stageH * ratio;
+            cropX = (stageW - cropW) / 2;
+          } else if (stageRatio < ratio) {
+            cropW = stageW;
+            cropH = stageW / ratio;
+            cropY = (stageH - cropH) / 2;
+          }
+
+          const backfieldCut = 40;
+          if (cropY + cropH > stageH - backfieldCut) {
+            cropH = stageH - backfieldCut - cropY;
+          }
+
+          const labelH = 120;
+          const canvas = document.createElement('canvas');
+          canvas.width = cropW;
+          canvas.height = cropH + labelH;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#d1d5db';
+          ctx.fillRect(0, 0, cropW, labelH);
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 96px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
+          ctx.drawImage(
+            img,
+            cropX,
+            cropY,
+            cropW,
+            cropH,
+            0,
+            labelH,
+            cropW,
+            cropH
+          );
+          resolve(canvas.toDataURL('image/png'));
+        };
       };
-       };
 
       if (thicknessMultiplier !== 1) {
         requestAnimationFrame(capture);
@@ -599,3 +616,4 @@ const backfieldCut = 40;
 };
 
 export default PlayEditor;
+
