@@ -24,8 +24,15 @@ const Canvas = () => {
     setLines(lines.concat());
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e) => {
     setIsDrawing(false);
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    if (!point) return;
+    let lastLine = lines[lines.length - 1];
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
   };
 
   return (
@@ -34,7 +41,7 @@ const Canvas = () => {
       height={600}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
+      onMouseUp={(e) => handleMouseUp(e)}
       style={{ background: '#ffffff', border: '1px solid #ccc' }}
     >
       <Layer>
