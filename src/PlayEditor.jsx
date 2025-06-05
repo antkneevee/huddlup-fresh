@@ -201,6 +201,19 @@ const PlayEditor = ({ loadedPlay }) => {
     }
   };
 
+  const handlePointDrag = (routeIdx, pointIdx, x, y) => {
+    setRoutes(prevRoutes => {
+      const newRoutes = [...prevRoutes];
+      const route = { ...newRoutes[routeIdx] };
+      const points = [...route.points];
+      points[pointIdx * 2] = x;
+      points[pointIdx * 2 + 1] = y;
+      route.points = points;
+      newRoutes[routeIdx] = route;
+      return newRoutes;
+    });
+  };
+
   const getExportDataUrl = async (ratio, thicknessMultiplier = 1) => {
     return new Promise(resolve => {
       if (!stageRef.current) {
@@ -396,6 +409,7 @@ const PlayEditor = ({ loadedPlay }) => {
           setSelectedRouteIndex={setSelectedRouteIndex}
           selectedNoteIndex={selectedNoteIndex}
           setSelectedNoteIndex={setSelectedNoteIndex}
+          handlePointDrag={handlePointDrag}
           stageRef={stageRef}
         />
 
