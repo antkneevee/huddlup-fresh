@@ -273,13 +273,18 @@ const PlayEditor = ({ loadedPlay }) => {
           const logoImg = new Image();
           logoImg.src = huddlupLogo;
           logoImg.onload = () => {
-            const labelH = 240;
+            const titleH = 240;
+            const brandingH = 240;
             const canvas = document.createElement('canvas');
             canvas.width = cropW;
-            canvas.height = cropH + labelH;
+            canvas.height = cropH + titleH + brandingH;
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Top area for play title
+            ctx.fillStyle = '#d1d5db';
+            ctx.fillRect(0, 0, cropW, titleH);
 
             // Field image
             ctx.drawImage(
@@ -289,20 +294,21 @@ const PlayEditor = ({ loadedPlay }) => {
               cropW,
               cropH,
               0,
-              0,
+              titleH,
               cropW,
               cropH
             );
 
+            // Bottom branding background
             ctx.fillStyle = '#d1d5db';
-            ctx.fillRect(0, cropH, cropW, labelH);
+            ctx.fillRect(0, titleH + cropH, cropW, brandingH);
 
             // Play title
             ctx.fillStyle = '#000';
             ctx.font = 'bold 192px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(playName || 'Unnamed Play', cropW / 2, cropH + labelH / 2);
+            ctx.fillText(playName || 'Unnamed Play', cropW / 2, titleH / 2);
 
             // "made with" text and logo
             ctx.font = '192px sans-serif';
@@ -315,11 +321,11 @@ const PlayEditor = ({ loadedPlay }) => {
             const spacing = 20;
             const rightMargin = 40;
             const startX = cropW - mwWidth - logoWidth - spacing - rightMargin;
-            ctx.fillText(madeWith, startX, cropH + labelH / 2);
+            ctx.fillText(madeWith, startX, titleH + cropH + brandingH / 2);
             ctx.drawImage(
               logoImg,
               startX + mwWidth + spacing,
-              cropH + labelH / 2 - logoHeight / 2,
+              titleH + cropH + brandingH / 2 - logoHeight / 2,
               logoWidth,
               logoHeight
             );
