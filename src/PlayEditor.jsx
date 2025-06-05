@@ -3,6 +3,8 @@ import FootballField from './components/FootballField';
 import Toolbar from './components/Toolbar';
 import { User, ArrowRight, Trash2, StickyNote } from 'lucide-react';
 import huddlupLogo from './assets/huddlup_logo_2.svg';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
 
 const width = 800;
 const height = 600;
@@ -26,7 +28,7 @@ const colorOptions = [
 const shapeOptions = ['circle', 'square', 'oval', 'star'];
 const endMarkerOptions = ['arrow', 'dot', 'T'];
 
-const PlayEditor = ({ loadedPlay }) => {
+const PlayEditor = ({ loadedPlay, onSignInRequest }) => {
   const [players, setPlayers] = useState(initialPlayersTemplate);
   const [routes, setRoutes] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -82,6 +84,11 @@ const PlayEditor = ({ loadedPlay }) => {
       return;
     }
 
+    if (!auth.currentUser) {
+      onSignInRequest && onSignInRequest();
+      return;
+    }
+
     const dataURL = await getExportDataUrl(4 / 3);
 
     const playKey = `Play-${Date.now()}`;
@@ -98,7 +105,7 @@ const PlayEditor = ({ loadedPlay }) => {
       image: dataURL
     };
 
-    localStorage.setItem(playKey, JSON.stringify(playData));
+    await setDoc(doc(db, 'plays', playKey), playData);
     setShowSaveModal(true);
 
     setSavedState({

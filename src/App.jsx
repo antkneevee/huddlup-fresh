@@ -10,6 +10,10 @@ const AppContent = () => {
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
 
+  const handleSignInRequest = () => {
+    alert('Please sign in to save plays.');
+  };
+
   const handleLoadPlay = (play) => {
     setSelectedPlay(play);
     navigate('/');  // Use navigate to stay within SPA and preserve state
@@ -50,7 +54,15 @@ const AppContent = () => {
       {/* Main Content */}
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<PlayEditor loadedPlay={selectedPlay} />} />
+          <Route
+            path="/"
+            element={
+              <PlayEditor
+                loadedPlay={selectedPlay}
+                onSignInRequest={handleSignInRequest}
+              />
+            }
+          />
           <Route path="/library" element={<PlayLibrary onSelectPlay={handleLoadPlay} />} />
           <Route path="/playbooks" element={<PlaybookLibrary />} />
         </Routes>
