@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import FootballField from './components/FootballField';
 import Toolbar from './components/Toolbar';
 import { User, ArrowRight, Trash2, StickyNote } from 'lucide-react';
+import huddlupLogo from './assets/huddlup_logo_2.svg';
 
 const width = 800;
 const height = 600;
@@ -256,32 +257,61 @@ const PlayEditor = ({ loadedPlay }) => {
             cropH = stageH - backfieldCut - cropY;
           }
 
-          const labelH = 240;
-          const canvas = document.createElement('canvas');
-          canvas.width = cropW;
-          canvas.height = cropH + labelH;
-          const ctx = canvas.getContext('2d');
-          ctx.fillStyle = '#fff';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = '#d1d5db';
-          ctx.fillRect(0, 0, cropW, labelH);
-          ctx.fillStyle = '#000';
-          ctx.font = 'bold 192px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
-          ctx.drawImage(
-            img,
-            cropX,
-            cropY,
-            cropW,
-            cropH,
-            0,
-            labelH,
-            cropW,
-            cropH
-          );
-          resolve(canvas.toDataURL('image/png'));
+          const logoImg = new Image();
+          logoImg.src = huddlupLogo;
+          logoImg.onload = () => {
+            const labelH = 240;
+            const canvas = document.createElement('canvas');
+            canvas.width = cropW;
+            canvas.height = cropH + labelH;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#d1d5db';
+            ctx.fillRect(0, 0, cropW, labelH);
+
+            // Play title
+            ctx.fillStyle = '#000';
+            ctx.font = 'bold 192px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
+
+            // "made with" text and logo
+            ctx.font = '192px sans-serif';
+            ctx.fillStyle = '#9CA3AF';
+            ctx.textAlign = 'left';
+            const madeWith = 'made with';
+            const mwWidth = ctx.measureText(madeWith).width;
+            const logoHeight = 192;
+            const logoWidth = (logoImg.width * logoHeight) / logoImg.height;
+            const spacing = 20;
+            const rightMargin = 40;
+            const startX = cropW - mwWidth - logoWidth - spacing - rightMargin;
+            ctx.fillText(madeWith, startX, labelH / 2);
+            ctx.drawImage(
+              logoImg,
+              startX + mwWidth + spacing,
+              labelH / 2 - logoHeight / 2,
+              logoWidth,
+              logoHeight
+            );
+
+            // Field image
+            ctx.drawImage(
+              img,
+              cropX,
+              cropY,
+              cropW,
+              cropH,
+              0,
+              labelH,
+              cropW,
+              cropH
+            );
+
+            resolve(canvas.toDataURL('image/png'));
+          };
         };
       };
 
