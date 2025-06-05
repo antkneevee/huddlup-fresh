@@ -87,7 +87,6 @@ const PlaybookLibrary = () => {
 
   const handlePrintConfirm = (opts) => {
     const options = opts || {};
-        const _thicknessMultiplier = options.thicknessMultiplier || 1;
 
     const book = playbooks.find(b => b.id === printBookId);
     setShowPrintModal(false);
