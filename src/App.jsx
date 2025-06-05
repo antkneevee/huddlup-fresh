@@ -55,7 +55,8 @@ const AppContent = ({ user, openSignIn }) => {
             >
               Sign Out
             </button>
-          </nav>
+            </nav>
+
         </div>
       </header>
 
