@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
+import SignInModal from './components/SignInModal';
 import logo from './assets/huddlup_logo_2.svg';
 import { Home, Book, BookOpen } from 'lucide-react';
 
-const AppContent = () => {
+const AppContent = ({ user, onSignInRequest }) => {
+
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
 
@@ -24,33 +26,53 @@ const AppContent = () => {
             <img src={logo} alt="HuddlUp Logo" className="h-8" />
             <h1 className="text-xl font-bold">huddlup</h1>
           </div>
-          <nav className="flex flex-wrap gap-2">
-            <Link
-              to="/"
-              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-            >
-              <Home className="w-4 h-4 mr-1" /> Editor
-            </Link>
-            <Link
-              to="/library"
-              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-            >
-              <Book className="w-4 h-4 mr-1" /> Play Library
-            </Link>
-            <Link
-              to="/playbooks"
-              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-            >
-              <BookOpen className="w-4 h-4 mr-1" /> Playbooks
-            </Link>
-          </nav>
+          <div className="flex items-center gap-4">
+
+            <nav className="flex flex-wrap gap-2">
+              <Link
+                to="/"
+                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              >
+                <Home className="w-4 h-4 mr-1" /> Editor
+              </Link>
+              <Link
+                to="/library"
+                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              >
+                <Book className="w-4 h-4 mr-1" /> Play Library
+              </Link>
+              <Link
+                to="/playbooks"
+                className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              >
+                <BookOpen className="w-4 h-4 mr-1" /> Playbooks
+              </Link>
+            </nav>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span>{user.email}</span>
+                <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded">Sign Out</button>
+              </div>
+            ) : (
+              <button
+                className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+                onClick={onSignInRequest}
+
+              >
+                Sign In
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<PlayEditor loadedPlay={selectedPlay} />} />
+          <Route
+            path="/"
+            element={<PlayEditor loadedPlay={selectedPlay} openSignIn={openSignIn} />}
+          />
           <Route path="/library" element={<PlayLibrary onSelectPlay={handleLoadPlay} />} />
           <Route path="/playbooks" element={<PlaybookLibrary />} />
         </Routes>
@@ -59,10 +81,11 @@ const AppContent = () => {
   );
 };
 
-const App = () => {
+const App = ({ user, onSignInRequest }) => {
   return (
     <Router>
-      <AppContent />
+      <AppContent user={user} onSignInRequest={onSignInRequest} />
+
     </Router>
   );
 };
