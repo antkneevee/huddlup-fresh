@@ -79,7 +79,7 @@ const App = () => {
   const [showSignInModal, setShowSignInModal] = useState(false);
 
   const openSignIn = () => setShowSignInModal(true);
-  const closeSignIn = () => setShowSignInModal(false);
+
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, setUser);
@@ -93,7 +93,9 @@ const App = () => {
   return (
     <Router>
       <AppContent user={user} openSignIn={openSignIn} />
-      {showSignInModal && <SignInModal onClose={closeSignIn} />}
+      {showSignInModal && (
+        <SignInModal onClose={() => setShowSignInModal(false)} />
+      )}
 
     </Router>
   );
