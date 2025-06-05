@@ -108,20 +108,40 @@ const PlaybookLibrary = () => {
     const isWrist = options.type === 'wristband';
     const layout = options.layout || 4;
 
-    // scale down wristbands if they would overflow a standard 8.5" page
-    const maxPageWidth = 8; // leave room for printer margins
-    const totalWidth = layout * options.width;
-    const scale = isWrist && totalWidth > maxPageWidth ? maxPageWidth / totalWidth : 1;
-    const cellWidth = options.width * scale;
-    const cellHeight = options.height * scale;
+
+    // wristband layouts are always two rows. Map the number of plays
+    // (4/6/8) to the correct column count (2/3/4).
+    const columns = isWrist ? Math.ceil(layout / 2) : 4;
+
+    // Treat width/height as the final wristband dimensions. Each cell is
+    // sized by dividing the overall width/height by the layout.
+    let scale = 1;
+    let cellWidth = options.width / columns;
+    let cellHeight = isWrist ? options.height / 2 : options.height;
+    let gridWidth = options.width;
+    let gridHeight = isWrist ? options.height : null;
+
+    if (isWrist) {
+      const maxPageWidth = 8; // leave room for printer margins
+      if (options.width > maxPageWidth) {
+        scale = maxPageWidth / options.width;
+        gridWidth *= scale;
+        gridHeight *= scale;
+        cellWidth *= scale;
+        cellHeight *= scale;
+      }
+    }
+
+
 
     const style = `
       <style>
         body{margin:0;padding:10px;font-family:sans-serif;}
         .page{page-break-after:always;margin-bottom:20px;}
-        .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${layout}, ${cellWidth}in);width:${layout * cellWidth}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
+
+                .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${columns}, ${cellWidth}in);grid-template-rows:repeat(2, ${cellHeight}in);width:${gridWidth}in;height:${gridHeight}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
         .play{position:relative;border:1px solid #000;${isWrist ? `width:${cellWidth}in;height:${cellHeight}in;` : 'padding:2px;'}text-align:center;}
-        .label{position:absolute;top:0;left:0;display:flex;width:100%;}
+        .label{position:absolute;top:0;left:0;display:flex;width:100%;z-index:1;}
         .num{background:#000;color:#fff;padding:2px 4px;font-size:10px;display:flex;justify-content:center;align-items:center;}
         .title{background:#ddd;color:#000;padding:2px 4px;font-size:10px;flex:1;display:flex;align-items:center;}
         img{width:100%;height:100%;object-fit:contain;display:block;}
