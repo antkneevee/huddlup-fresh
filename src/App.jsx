@@ -55,8 +55,7 @@ const AppContent = ({ user }) => {
             >
               Sign Out
             </button>
-          </nav>
-=
+            </nav>
         </div>
       </header>
 
