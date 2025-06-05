@@ -10,6 +10,14 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare }) => {
     }
   };
 
+
+  const handleShareClick = () => {
+    if (onShare) {
+      onShare(parseFloat(aspect));
+    }
+  };
+
+
   return (
     <div className="flex flex-wrap gap-2">
       <button
@@ -43,7 +51,9 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare }) => {
       </div>
       <button
         className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-        onClick={onShare}
+
+        onClick={handleShareClick}
+
       >
         <ShareIcon className="w-4 h-4 mr-1" /> Share
       </button>

@@ -230,15 +230,17 @@ const PlayEditor = ({ loadedPlay }) => {
           cropH = stageW / ratio;
           cropY = (stageH - cropH) / 2;
         }
-        const labelH = 40;
+        const labelH = 120;
         const canvas = document.createElement('canvas');
         canvas.width = cropW;
         canvas.height = cropH + labelH;
         const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#d1d5db';
         ctx.fillRect(0, 0, cropW, labelH);
         ctx.fillStyle = '#000';
-        ctx.font = 'bold 24px sans-serif';
+        ctx.font = 'bold 96px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
@@ -259,8 +261,9 @@ const PlayEditor = ({ loadedPlay }) => {
     document.body.removeChild(link);
   };
 
-  const handleShare = async () => {
-    const url = await getExportDataUrl(2);
+  const handleShare = async (ratio) => {
+    const url = await getExportDataUrl(ratio);
+
     if (!url) return;
     if (navigator.share && navigator.canShare) {
       const res = await fetch(url);
