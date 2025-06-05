@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
+import PlaybookLibrary from './components/PlaybookLibrary';
 import logo from './assets/huddlup_logo_1.png';
-import { Home, Book } from 'lucide-react';
+import { Home, Book, BookOpen } from 'lucide-react';
 
 const AppContent = () => {
   const [selectedPlay, setSelectedPlay] = useState(null);
@@ -36,6 +37,12 @@ const AppContent = () => {
             >
               <Book className="w-4 h-4 mr-1" /> Play Library
             </Link>
+            <Link
+              to="/playbooks"
+              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              <BookOpen className="w-4 h-4 mr-1" /> Playbooks
+            </Link>
           </nav>
         </div>
       </header>
@@ -45,6 +52,7 @@ const AppContent = () => {
         <Routes>
           <Route path="/" element={<PlayEditor loadedPlay={selectedPlay} />} />
           <Route path="/library" element={<PlayLibrary onSelectPlay={handleLoadPlay} />} />
+          <Route path="/playbooks" element={<PlaybookLibrary />} />
         </Routes>
       </main>
     </div>

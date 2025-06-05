@@ -7,6 +7,7 @@ import {
   Rect,
   Ellipse,
   Star,
+  Line,
   Arrow,
   Text,
   Group,
@@ -21,6 +22,28 @@ function pointsToXY(points) {
     arr.push({ x: points[i], y: points[i + 1] });
   }
   return arr;
+}
+
+function getArrowHeadPoints(points, length = 10, width = 10) {
+  const [x1, y1, x2, y2] = points.slice(-4);
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+<<<<<<< ours
+  const leftX = x2 - length * Math.cos(angle) + width * Math.sin(angle);
+  const leftY = y2 - length * Math.sin(angle) - width * Math.cos(angle);
+  const rightX = x2 - length * Math.cos(angle) - width * Math.sin(angle);
+  const rightY = y2 - length * Math.sin(angle) + width * Math.cos(angle);
+  return [x2, y2, leftX, leftY, rightX, rightY];
+=======
+  const left = {
+    x: x2 - length * Math.cos(angle) + width * Math.sin(angle),
+    y: y2 - length * Math.sin(angle) - width * Math.cos(angle)
+  };
+  const right = {
+    x: x2 - length * Math.cos(angle) - width * Math.sin(angle),
+    y: y2 - length * Math.sin(angle) + width * Math.cos(angle)
+  };
+  return [x2, y2, left.x, left.y, right.x, right.y];
+>>>>>>> theirs
 }
 
 const FootballField = ({
@@ -211,14 +234,24 @@ const FootballField = ({
                 />
               )}
               {endMarker === 'arrow' && points.length >= 4 && (
-                <Arrow
-                  points={points.slice(-4)}
-                  stroke={color}
-                  fill={color}
-                  pointerLength={10}
-                  pointerWidth={10}
-                  strokeWidth={thickness || 3}
-                />
+                smooth ? (
+                  <Line
+                    points={getArrowHeadPoints(points)}
+                    closed
+                    fill={color}
+                    stroke={color}
+                    strokeWidth={1}
+                  />
+                ) : (
+                  <Arrow
+                    points={points.slice(-4)}
+                    stroke={color}
+                    fill={color}
+                    pointerLength={10}
+                    pointerWidth={10}
+                    strokeWidth={thickness || 3}
+                  />
+                )
               )}
               {isSelected &&
                 points.map((_, i) => {
