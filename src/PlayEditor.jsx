@@ -256,7 +256,7 @@ const PlayEditor = ({ loadedPlay }) => {
             cropH = stageH - backfieldCut - cropY;
           }
 
-          const labelH = 120;
+          const labelH = 240;
           const canvas = document.createElement('canvas');
           canvas.width = cropW;
           canvas.height = cropH + labelH;
@@ -266,7 +266,7 @@ const PlayEditor = ({ loadedPlay }) => {
           ctx.fillStyle = '#d1d5db';
           ctx.fillRect(0, 0, cropW, labelH);
           ctx.fillStyle = '#000';
-          ctx.font = 'bold 96px sans-serif';
+          ctx.font = 'bold 192px sans-serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(playName || 'Unnamed Play', cropW / 2, labelH / 2);
