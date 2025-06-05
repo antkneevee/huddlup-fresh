@@ -3,7 +3,7 @@ import AddToPlaybookModal from './AddToPlaybookModal';
 import { db, auth } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
-const PlayLibrary = ({ onSelectPlay }) => {
+const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
   const [plays, setPlays] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [itemsPerPage, setItemsPerPage] = useState(25);
@@ -11,29 +11,24 @@ const PlayLibrary = ({ onSelectPlay }) => {
   const [selectedPlayId, setSelectedPlayId] = useState(null);
 
   useEffect(() => {
+    if (!auth.currentUser) {
+      openSignIn();
+      return;
+    }
     const fetchPlays = async () => {
-      if (auth.currentUser) {
-        const snap = await getDocs(collection(db, 'users', auth.currentUser.uid, 'plays'));
-        const arr = [];
-        snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
-        setPlays(arr);
-      } else {
-        const savedPlays = [];
-        for (let key in localStorage) {
-          if (key.startsWith('Play-')) {
-            try {
-              const play = JSON.parse(localStorage.getItem(key));
-              savedPlays.push({ ...play, id: key });
-            } catch {
-              // ignore bad data
-            }
-          }
-        }
-        setPlays(savedPlays);
-      }
+      const snap = await getDocs(
+        collection(db, 'users', auth.currentUser.uid, 'plays')
+      );
+      const arr = [];
+      snap.forEach((d) => arr.push({ id: d.id, ...d.data() }));
+      setPlays(arr);
     };
     fetchPlays();
-  }, []);
+  }, [user, openSignIn]);
+
+  if (!auth.currentUser) {
+    return <div className="p-4">Please sign in to view your plays.</div>;
+  }
 
   const filteredPlays = plays.filter(play => {
     const query = searchQuery.toLowerCase();

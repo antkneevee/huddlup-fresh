@@ -77,8 +77,20 @@ const AppContent = ({ user, openSignIn }) => {
             path="/"
             element={<PlayEditor loadedPlay={selectedPlay} openSignIn={openSignIn} />}
           />
-          <Route path="/library" element={<PlayLibrary onSelectPlay={handleLoadPlay} />} />
-          <Route path="/playbooks" element={<PlaybookLibrary />} />
+          <Route
+            path="/library"
+            element={
+              <PlayLibrary
+                onSelectPlay={handleLoadPlay}
+                user={user}
+                openSignIn={openSignIn}
+              />
+            }
+          />
+          <Route
+            path="/playbooks"
+            element={<PlaybookLibrary user={user} openSignIn={openSignIn} />}
+          />
         </Routes>
       </main>
     </div>
