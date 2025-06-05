@@ -7,7 +7,8 @@ import SignInModal from './components/SignInModal';
 import logo from './assets/huddlup_logo_2.svg';
 import { Home, Book, BookOpen } from 'lucide-react';
 
-const AppContent = ({ openSignIn, isAuthenticated, onSignOut }) => {
+const AppContent = ({ user, onSignInRequest }) => {
+
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
 
@@ -25,7 +26,8 @@ const AppContent = ({ openSignIn, isAuthenticated, onSignOut }) => {
             <img src={logo} alt="HuddlUp Logo" className="h-8" />
             <h1 className="text-xl font-bold">huddlup</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+
             <nav className="flex flex-wrap gap-2">
               <Link
                 to="/"
@@ -46,17 +48,16 @@ const AppContent = ({ openSignIn, isAuthenticated, onSignOut }) => {
                 <BookOpen className="w-4 h-4 mr-1" /> Playbooks
               </Link>
             </nav>
-            {isAuthenticated ? (
-              <button
-                onClick={onSignOut}
-                className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-              >
-                Sign Out
-              </button>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span>{user.email}</span>
+                <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded">Sign Out</button>
+              </div>
             ) : (
               <button
-                onClick={openSignIn}
                 className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+                onClick={onSignInRequest}
+
               >
                 Sign In
               </button>
@@ -80,32 +81,11 @@ const AppContent = ({ openSignIn, isAuthenticated, onSignOut }) => {
   );
 };
 
-const App = () => {
-  const [showSignIn, setShowSignIn] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const openSignIn = () => setShowSignIn(true);
-  const closeSignIn = () => setShowSignIn(false);
-
-  const handleSignIn = () => {
-    setIsAuthenticated(true);
-    closeSignIn();
-  };
-
-  const handleSignOut = () => {
-    setIsAuthenticated(false);
-  };
-
+const App = ({ user, onSignInRequest }) => {
   return (
     <Router>
-      <AppContent
-        openSignIn={openSignIn}
-        isAuthenticated={isAuthenticated}
-        onSignOut={handleSignOut}
-      />
-      {showSignIn && (
-        <SignInModal onClose={closeSignIn} onSignIn={handleSignIn} />
-      )}
+      <AppContent user={user} onSignInRequest={onSignInRequest} />
+
     </Router>
   );
 };
