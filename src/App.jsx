@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
-import SignIn from './components/SignIn';
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
@@ -48,13 +47,24 @@ const AppContent = ({ user, openSignIn }) => {
             >
               <BookOpen className="w-4 h-4 mr-1" /> Playbooks
             </Link>
-            <span className="mx-2 text-sm">{user.email}</span>
-            <button
-              onClick={() => signOut(auth)}
-              className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
-            >
-              Sign Out
-            </button>
+            {user ? (
+              <>
+                <span className="mx-2 text-sm">{user.email}</span>
+                <button
+                  onClick={() => signOut(auth)}
+                  className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={openSignIn}
+                className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              >
+                Sign In
+              </button>
+            )}
             </nav>
 
         </div>
@@ -86,10 +96,6 @@ const App = () => {
     const unsub = onAuthStateChanged(auth, setUser);
     return unsub;
   }, []);
-
-  if (!user) {
-    return <SignIn />;
-  }
 
   return (
     <Router>
