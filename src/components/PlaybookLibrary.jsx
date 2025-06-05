@@ -1,56 +1,53 @@
-
- import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { ChevronUp, ChevronDown, PlusCircle, Trash2 } from 'lucide-react';
 import PrintOptionsModal from './PrintOptionsModal';
- 
- const PlaybookLibrary = () => {
-   const [playbooks, setPlaybooks] = useState([]);
+
+const PlaybookLibrary = () => {
+  const [playbooks, setPlaybooks] = useState([]);
   const [collapsed, setCollapsed] = useState({});
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [printBookId, setPrintBookId] = useState(null);
- 
-   useEffect(() => {
-     const books = [];
-     for (let key in localStorage) {
-       if (key.startsWith('Playbook-')) {
-         try {
-           const book = JSON.parse(localStorage.getItem(key));
-           books.push(book);
 
+  useEffect(() => {
+    const books = [];
+    for (let key in localStorage) {
+      if (key.startsWith('Playbook-')) {
+        try {
+          const book = JSON.parse(localStorage.getItem(key));
+          books.push(book);
         } catch {
           // ignore bad data
-         }
-       }
-     }
+        }
+      }
+    }
     books.sort((a, b) => (a.order || 0) - (b.order || 0));
-     setPlaybooks(books);
-   }, []);
- 
-   const getPlay = (id) => {
-     try {
-       return JSON.parse(localStorage.getItem(id));
-     } catch {
-       return null;
-     }
-   };
- 
+    setPlaybooks(books);
+  }, []);
+
+  const getPlay = (id) => {
+    try {
+      return JSON.parse(localStorage.getItem(id));
+    } catch {
+      return null;
+    }
+  };
 
   const movePlay = (bookId, index, direction) => {
-     setPlaybooks((prev) =>
-       prev.map((book) => {
-         if (book.id !== bookId) return book;
-         const ids = [...book.playIds];
-         const newIndex = index + direction;
-         if (newIndex < 0 || newIndex >= ids.length) return book;
-         [ids[index], ids[newIndex]] = [ids[newIndex], ids[index]];
-         const updatedBook = { ...book, playIds: ids };
-         localStorage.setItem(bookId, JSON.stringify(updatedBook));
-         return updatedBook;
-       })
-     );
-   };
- 
+    setPlaybooks((prev) =>
+      prev.map((book) => {
+        if (book.id !== bookId) return book;
+        const ids = [...book.playIds];
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= ids.length) return book;
+        [ids[index], ids[newIndex]] = [ids[newIndex], ids[index]];
+        const updatedBook = { ...book, playIds: ids };
+        localStorage.setItem(bookId, JSON.stringify(updatedBook));
+        return updatedBook;
+      })
+    );
+  };
+
   const addPlaybook = () => {
     const name = prompt('Playbook name');
     if (!name) return;
@@ -168,9 +165,8 @@ import PrintOptionsModal from './PrintOptionsModal';
     setPrintBookId(null);
   };
 
- 
-   return (
-     <div className="p-4 max-w-7xl mx-auto">
+  return (
+    <div className="p-4 max-w-7xl mx-auto">
 
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Playbooks</h1>
@@ -182,14 +178,14 @@ import PrintOptionsModal from './PrintOptionsModal';
         </button>
       </div>
       {playbooks.map((book, bIndex) => (
-         <div key={book.id} className="mb-8 bg-gray-800 p-4 rounded">
-           <div className="flex justify-between items-center mb-2">
+        <div key={book.id} className="mb-8 bg-gray-800 p-4 rounded">
+          <div className="flex justify-between items-center mb-2">
 
             <div className="flex items-center gap-2">
               <button
                 className="bg-gray-700 p-1 rounded"
                 onClick={() => movePlaybook(bIndex, -1)}
-            >
+              >
                 <ChevronUp className="w-4 h-4" />
               </button>
               <button
@@ -219,7 +215,7 @@ import PrintOptionsModal from './PrintOptionsModal';
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
-           </div>
+          </div>
 
           {!collapsed[book.id] && (
             <div className="grid grid-cols-4 gap-4">
@@ -241,7 +237,7 @@ import PrintOptionsModal from './PrintOptionsModal';
                       >
                         <ChevronDown className="w-3 h-3" />
                       </button>
-                     </div>
+                    </div>
 
                     {play.image ? (
                       <img
@@ -260,14 +256,13 @@ import PrintOptionsModal from './PrintOptionsModal';
               })}
             </div>
           )}
-         </div>
-       ))}
+        </div>
+      ))}
       {showPrintModal && (
         <PrintOptionsModal onClose={() => setShowPrintModal(false)} onPrint={handlePrintConfirm} />
       )}
-     </div>
-   );
- };
- 
+    </div>
+  );
+};
 
 export default PlaybookLibrary;
