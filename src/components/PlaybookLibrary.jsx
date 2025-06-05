@@ -152,19 +152,23 @@ const PlaybookLibrary = () => {
     w.document.write(`<html><head><title>${book.name}</title>${style}</head><body>`);
 
     if (isWrist) {
-      w.document.write('<div class="grid page">');
-      plays.forEach((play, idx) => {
-        w.document.write('<div class="play">');
-        if (includeNumber || includeTitle) {
-          w.document.write('<div class="label">');
-          if (includeNumber) w.document.write(`<div class="num">${idx + 1}</div>`);
-          if (includeTitle) w.document.write(`<div class="title">${play.name}</div>`);
+      for (let i = 0; i < plays.length; i += layout) {
+        w.document.write('<div class="grid page">');
+        const pagePlays = plays.slice(i, i + layout);
+        pagePlays.forEach((play, idx) => {
+          const num = i + idx + 1;
+          w.document.write('<div class="play">');
+          if (includeNumber || includeTitle) {
+            w.document.write('<div class="label">');
+            if (includeNumber) w.document.write(`<div class="num">${num}</div>`);
+            if (includeTitle) w.document.write(`<div class="title">${play.name}</div>`);
+            w.document.write('</div>');
+          }
+          if (play.image) w.document.write(`<img src="${play.image}" />`);
           w.document.write('</div>');
-        }
-        if (play.image) w.document.write(`<img src="${play.image}" />`);
+        });
         w.document.write('</div>');
-      });
-      w.document.write('</div>');
+      }
     } else {
       for (let i = 0; i < plays.length; i += perPage) {
         w.document.write('<div class="grid page">');
