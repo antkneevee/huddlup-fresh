@@ -80,6 +80,7 @@ const App = () => {
 
   const openSignIn = () => setShowSignInModal(true);
 
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, setUser);
     return unsub;
@@ -95,6 +96,7 @@ const App = () => {
       {showSignInModal && (
         <SignInModal onClose={() => setShowSignInModal(false)} />
       )}
+
     </Router>
   );
 };
