@@ -114,7 +114,7 @@ import PrintOptionsModal from './PrintOptionsModal';
       <style>
         body{margin:0;padding:10px;font-family:sans-serif;}
         .page{page-break-after:always;margin-bottom:20px;}
-        .grid{display:grid;grid-template-columns:repeat(${isWrist ? layout : 4},1fr);${isWrist ? 'gap:0;' : 'gap:4px;'}}
+        .grid{display:grid;${isWrist ? `grid-template-columns:repeat(${layout}, ${options.width}in);width:${layout * options.width}in;margin:auto;gap:0;` : 'grid-template-columns:repeat(4,1fr);gap:4px;'}}
         .play{position:relative;border:1px solid #000;${isWrist ? `width:${options.width}in;height:${options.height}in;` : 'padding:2px;'}text-align:center;}
         .label{position:absolute;top:0;left:0;display:flex;width:100%;}
         .num{background:#000;color:#fff;padding:2px 4px;font-size:10px;display:flex;justify-content:center;align-items:center;}
@@ -128,8 +128,7 @@ import PrintOptionsModal from './PrintOptionsModal';
     if (isWrist) {
       w.document.write('<div class="grid page">');
       plays.forEach((play, idx) => {
-        const styleAttr = ` style=\"width:${options.width}in;height:${options.height}in;\"`;
-        w.document.write(`<div class="play"${styleAttr}>`);
+        w.document.write('<div class="play">');
         if (includeNumber || includeTitle) {
           w.document.write('<div class="label">');
           if (includeNumber) w.document.write(`<div class="num">${idx + 1}</div>`);
