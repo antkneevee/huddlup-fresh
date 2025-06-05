@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddToPlaybookModal from './AddToPlaybookModal';
+import { db, auth } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const PlayLibrary = ({ onSelectPlay }) => {
   const [plays, setPlays] = useState([]);
@@ -9,18 +11,28 @@ const PlayLibrary = ({ onSelectPlay }) => {
   const [selectedPlayId, setSelectedPlayId] = useState(null);
 
   useEffect(() => {
-    const savedPlays = [];
-    for (let key in localStorage) {
-      if (key.startsWith('Play-')) {
-        try {
-          const play = JSON.parse(localStorage.getItem(key));
-          savedPlays.push({ ...play, id: key });
-        } catch {
-          // ignore bad data
+    const fetchPlays = async () => {
+      if (auth.currentUser) {
+        const snap = await getDocs(collection(db, 'users', auth.currentUser.uid, 'plays'));
+        const arr = [];
+        snap.forEach(d => arr.push({ id: d.id, ...d.data() }));
+        setPlays(arr);
+      } else {
+        const savedPlays = [];
+        for (let key in localStorage) {
+          if (key.startsWith('Play-')) {
+            try {
+              const play = JSON.parse(localStorage.getItem(key));
+              savedPlays.push({ ...play, id: key });
+            } catch {
+              // ignore bad data
+            }
+          }
         }
+        setPlays(savedPlays);
       }
-    }
-    setPlays(savedPlays);
+    };
+    fetchPlays();
   }, []);
 
   const filteredPlays = plays.filter(play => {

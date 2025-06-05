@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { auth, db } from './firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import FootballField from './components/FootballField';
 import Toolbar from './components/Toolbar';
 import { User, ArrowRight, Trash2, StickyNote } from 'lucide-react';
@@ -98,7 +100,11 @@ const PlayEditor = ({ loadedPlay }) => {
       image: dataURL
     };
 
-    localStorage.setItem(playKey, JSON.stringify(playData));
+    if (auth.currentUser) {
+      await setDoc(doc(db, 'users', auth.currentUser.uid, 'plays', playKey), playData);
+    } else {
+      localStorage.setItem(playKey, JSON.stringify(playData));
+    }
     setShowSaveModal(true);
 
     setSavedState({

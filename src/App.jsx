@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
+import SignIn from './components/SignIn';
 import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
 import logo from './assets/huddlup_logo_2.svg';
 import { Home, Book, BookOpen } from 'lucide-react';
 
-const AppContent = () => {
+const AppContent = ({ user }) => {
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
 
@@ -24,7 +27,7 @@ const AppContent = () => {
             <img src={logo} alt="HuddlUp Logo" className="h-8" />
             <h1 className="text-xl font-bold">huddlup</h1>
           </div>
-          <nav className="flex flex-wrap gap-2">
+          <nav className="flex flex-wrap gap-2 items-center">
             <Link
               to="/"
               className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
@@ -43,6 +46,13 @@ const AppContent = () => {
             >
               <BookOpen className="w-4 h-4 mr-1" /> Playbooks
             </Link>
+            <span className="mx-2 text-sm">{user.email}</span>
+            <button
+              onClick={() => signOut(auth)}
+              className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              Sign Out
+            </button>
           </nav>
         </div>
       </header>
@@ -60,9 +70,20 @@ const AppContent = () => {
 };
 
 const App = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, setUser);
+    return unsub;
+  }, []);
+
+  if (!user) {
+    return <SignIn />;
+  }
+
   return (
     <Router>
-      <AppContent />
+      <AppContent user={user} />
     </Router>
   );
 };

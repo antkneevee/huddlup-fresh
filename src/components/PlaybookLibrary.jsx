@@ -2,38 +2,72 @@ import React, { useState, useEffect } from 'react';
 
 import { ChevronUp, ChevronDown, PlusCircle, Trash2 } from 'lucide-react';
 import PrintOptionsModal from './PrintOptionsModal';
+import { db, auth } from '../firebase';
+import { collection, getDocs, setDoc, doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
 
 const PlaybookLibrary = () => {
   const [playbooks, setPlaybooks] = useState([]);
   const [collapsed, setCollapsed] = useState({});
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [printBookId, setPrintBookId] = useState(null);
+  const [playsMap, setPlaysMap] = useState({});
 
   useEffect(() => {
-    const books = [];
-    for (let key in localStorage) {
-      if (key.startsWith('Playbook-')) {
-        try {
-          const book = JSON.parse(localStorage.getItem(key));
-          books.push(book);
-        } catch {
-          // ignore bad data
+    const fetchBooks = async () => {
+      if (auth.currentUser) {
+        const snap = await getDocs(collection(db, 'users', auth.currentUser.uid, 'playbooks'));
+        const arr = [];
+        snap.forEach(d => arr.push(d.data()));
+        arr.sort((a, b) => (a.order || 0) - (b.order || 0));
+        setPlaybooks(arr);
+      } else {
+        const books = [];
+        for (let key in localStorage) {
+          if (key.startsWith('Playbook-')) {
+            try {
+              const book = JSON.parse(localStorage.getItem(key));
+              books.push(book);
+            } catch {
+              // ignore bad data
+            }
+          }
         }
+        books.sort((a, b) => (a.order || 0) - (b.order || 0));
+        setPlaybooks(books);
       }
-    }
-    books.sort((a, b) => (a.order || 0) - (b.order || 0));
-    setPlaybooks(books);
+    };
+    fetchBooks();
   }, []);
 
-  const getPlay = (id) => {
-    try {
-      return JSON.parse(localStorage.getItem(id));
-    } catch {
-      return null;
-    }
-  };
+  useEffect(() => {
+    const fetchPlays = async () => {
+      if (auth.currentUser) {
+        const snap = await getDocs(collection(db, 'users', auth.currentUser.uid, 'plays'));
+        const obj = {};
+        snap.forEach(d => {
+          obj[d.id] = d.data();
+        });
+        setPlaysMap(obj);
+      } else {
+        const obj = {};
+        for (let key in localStorage) {
+          if (key.startsWith('Play-')) {
+            try {
+              obj[key] = JSON.parse(localStorage.getItem(key));
+            } catch {
+              // ignore
+            }
+          }
+        }
+        setPlaysMap(obj);
+      }
+    };
+    fetchPlays();
+  }, []);
 
-  const movePlay = (bookId, index, direction) => {
+  const getPlay = (id) => playsMap[id] || null;
+
+  const movePlay = async (bookId, index, direction) => {
     setPlaybooks((prev) =>
       prev.map((book) => {
         if (book.id !== bookId) return book;
@@ -42,36 +76,52 @@ const PlaybookLibrary = () => {
         if (newIndex < 0 || newIndex >= ids.length) return book;
         [ids[index], ids[newIndex]] = [ids[newIndex], ids[index]];
         const updatedBook = { ...book, playIds: ids };
-        localStorage.setItem(bookId, JSON.stringify(updatedBook));
+        if (auth.currentUser) {
+          setDoc(doc(db, 'users', auth.currentUser.uid, 'playbooks', bookId), updatedBook);
+        } else {
+          localStorage.setItem(bookId, JSON.stringify(updatedBook));
+        }
         return updatedBook;
       })
     );
   };
 
-  const addPlaybook = () => {
+  const addPlaybook = async () => {
     const name = prompt('Playbook name');
     if (!name) return;
     const order = playbooks.length ? Math.max(...playbooks.map(b => b.order || 0)) + 1 : 0;
     const id = `Playbook-${Date.now()}`;
     const book = { id, name, playIds: [], order };
-    localStorage.setItem(id, JSON.stringify(book));
+    if (auth.currentUser) {
+      await setDoc(doc(db, 'users', auth.currentUser.uid, 'playbooks', id), book);
+    } else {
+      localStorage.setItem(id, JSON.stringify(book));
+    }
     setPlaybooks(prev => [...prev, book]);
   };
 
-  const deletePlaybook = (id) => {
+  const deletePlaybook = async (id) => {
     if (!window.confirm('Delete this playbook?')) return;
-    localStorage.removeItem(id);
+    if (auth.currentUser) {
+      await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'playbooks', id));
+    } else {
+      localStorage.removeItem(id);
+    }
     setPlaybooks(prev => prev.filter(b => b.id !== id));
   };
 
-  const movePlaybook = (index, direction) => {
+  const movePlaybook = async (index, direction) => {
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= playbooks.length) return;
     const books = [...playbooks];
     [books[index], books[newIndex]] = [books[newIndex], books[index]];
     books.forEach((b, i) => {
       const updated = { ...b, order: i };
-      localStorage.setItem(b.id, JSON.stringify(updated));
+      if (auth.currentUser) {
+        setDoc(doc(db, 'users', auth.currentUser.uid, 'playbooks', b.id), updated);
+      } else {
+        localStorage.setItem(b.id, JSON.stringify(updated));
+      }
     });
     setPlaybooks(books);
   };
@@ -96,9 +146,7 @@ const PlaybookLibrary = () => {
       return;
     }
 
-    const plays = book.playIds
-      .map(pid => getPlay(pid))
-      .filter(Boolean);
+    const plays = book.playIds.map(pid => getPlay(pid)).filter(Boolean);
 
     const w = window.open('', '_blank');
     if (!w) return;
