@@ -10,7 +10,7 @@ import SignInModal from './components/SignInModal';
 import logo from './assets/huddlup_logo_2.svg';
 import { Home, Book, BookOpen } from 'lucide-react';
 
-const AppContent = ({ user }) => {
+const AppContent = ({ user, openSignIn }) => {
 
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
@@ -56,7 +56,6 @@ const AppContent = ({ user }) => {
               Sign Out
             </button>
           </nav>
-=
         </div>
       </header>
 
@@ -77,6 +76,10 @@ const AppContent = ({ user }) => {
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [showSignInModal, setShowSignInModal] = useState(false);
+
+  const openSignIn = () => setShowSignInModal(true);
+  const closeSignIn = () => setShowSignInModal(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, setUser);
@@ -89,7 +92,8 @@ const App = () => {
 
   return (
     <Router>
-      <AppContent user={user} />
+      <AppContent user={user} openSignIn={openSignIn} />
+      {showSignInModal && <SignInModal onClose={closeSignIn} />}
 
     </Router>
   );
