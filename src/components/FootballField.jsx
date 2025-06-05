@@ -9,7 +9,9 @@ import {
   Star,
   Arrow,
   Text,
-  Group
+  Group,
+  Label,
+  Tag
 } from 'react-konva';
 import { line as d3Line, curveBasis, curveLinear } from 'd3-shape';
 
@@ -33,6 +35,8 @@ const FootballField = ({
   setNotes,
   selectedRouteIndex,
   setSelectedRouteIndex,
+  selectedNoteIndex,
+  setSelectedNoteIndex,
   handlePointDrag,
   stageRef
 }) => {
@@ -96,10 +100,12 @@ const FootballField = ({
   const handleClick = (index) => {
     setSelectedPlayerIndex(index);
     setSelectedRouteIndex(null);
+    if (setSelectedNoteIndex) setSelectedNoteIndex(null);
   };
 
   const handleStageClick = (e) => {
     const clickedOnEmpty = e.target === e.target.getStage();
+    if (setSelectedNoteIndex) setSelectedNoteIndex(null);
     if (clickedOnEmpty && selectedPlayerIndex !== null) {
       const stage = e.target.getStage();
       const pointerPosition = stage.getPointerPosition();
@@ -241,24 +247,38 @@ const FootballField = ({
 
         {/* Notes */}
         {notes.map((note, index) => (
-          <Text
+          <Label
             key={index}
             x={note.x}
             y={note.y}
-            text={note.text}
-            fontSize={note.fontSize}
-            fill={note.fontColor}
-            fontStyle={note.bold ? 'bold' : 'normal'}
-            stroke={note.border ? '#000' : null}
-            strokeWidth={note.border ? 1 : 0}
             draggable
+            onClick={(e) => {
+              e.cancelBubble = true;
+              if (setSelectedNoteIndex) setSelectedNoteIndex(index);
+              if (setSelectedPlayerIndex) setSelectedPlayerIndex(null);
+              if (setSelectedRouteIndex) setSelectedRouteIndex(null);
+            }}
             onDragEnd={(e) => {
               const updatedNotes = [...notes];
               updatedNotes[index].x = e.target.x();
               updatedNotes[index].y = e.target.y();
               setNotes(updatedNotes);
             }}
-          />
+          >
+            <Tag
+              fill={note.backgroundColor}
+              stroke={note.border ? '#000' : undefined}
+              strokeWidth={note.border ? 1 : 0}
+              cornerRadius={4}
+            />
+            <Text
+              text={note.text}
+              fontSize={note.fontSize}
+              fill={note.fontColor}
+              fontStyle={note.bold ? 'bold' : 'normal'}
+              padding={4}
+            />
+          </Label>
         ))}
 
         {/* Players */}

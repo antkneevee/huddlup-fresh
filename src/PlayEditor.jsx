@@ -158,6 +158,7 @@ const PlayEditor = ({ loadedPlay }) => {
       { players: [...players], routes: [...routes], notes: [...notes] }
     ]);
     setNotes([...notes, newNote]);
+    setSelectedNoteIndex(notes.length);
   };
 
   const handleLabelChange = (value) => {
