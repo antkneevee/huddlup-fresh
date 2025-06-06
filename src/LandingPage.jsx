@@ -11,7 +11,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
           <div className="flex items-center space-x-3">
             <img src={logo} alt="HuddlUp Logo" className="h-8" />
-            <h1 className="text-xl font-bold">huddlup</h1>
+            <h1 className="text-xl font-bold">Flag Football Play Designer</h1>
           </div>
           <Link
             to="/"
@@ -23,7 +23,7 @@ const LandingPage = () => {
       </header>
 
       {/* Hero */}
-      <section className="hero flex flex-col items-center justify-center text-center py-20 relative">
+      <section className="hero flex flex-col items-center justify-center text-center py-20 relative bg-[repeating-linear-gradient(135deg,#1f2937_0px,#1f2937_10px,#111827_10px,#111827_20px)]">
         <img src={playImage} alt="Play Design" className="max-w-md mb-6 z-10" />
         <h2 className="text-4xl font-bold mb-4">Design. Huddle. Dominate.</h2>
         <Link

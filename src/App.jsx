@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import PlayEditor from './PlayEditor';
@@ -14,6 +14,7 @@ const AppContent = ({ user, openSignIn }) => {
 
   const [selectedPlay, setSelectedPlay] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLoadPlay = (play) => {
     setSelectedPlay(play);
@@ -23,6 +24,7 @@ const AppContent = ({ user, openSignIn }) => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       {/* Header */}
+      {location.pathname !== '/landing' && (
       <header className="w-full bg-gray-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
           <div className="flex items-center space-x-3">
@@ -76,6 +78,7 @@ const AppContent = ({ user, openSignIn }) => {
 
         </div>
       </header>
+      )}
 
       {/* Main Content */}
       <main className="flex-grow">
