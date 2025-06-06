@@ -22,10 +22,10 @@ const AppContent = ({ user, openSignIn }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col text-gray-100">
       {/* Header */}
       {location.pathname !== '/landing' && location.pathname !== '/' && (
-      <header className="w-full bg-gray-800">
+      <header className="w-full bg-gray-800/80 shadow">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
           <div className="flex items-center space-x-3">
             <img src={logo} alt="HuddlUp Logo" className="h-8" />
@@ -34,25 +34,25 @@ const AppContent = ({ user, openSignIn }) => {
           <nav className="flex flex-wrap gap-2 items-center">
             <Link
               to="/"
-              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              className="flex items-center btn-dark"
             >
               Home
             </Link>
             <Link
               to="/editor"
-              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              className="flex items-center btn-dark"
             >
               <Home className="w-4 h-4 mr-1" /> Editor
             </Link>
             <Link
               to="/library"
-              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              className="flex items-center btn-dark"
             >
               <Book className="w-4 h-4 mr-1" /> Play Library
             </Link>
             <Link
               to="/playbooks"
-              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+              className="flex items-center btn-dark"
             >
               <BookOpen className="w-4 h-4 mr-1" /> Playbooks
             </Link>
@@ -61,7 +61,7 @@ const AppContent = ({ user, openSignIn }) => {
                 <span className="mx-2 text-sm">{user.email}</span>
                 <button
                   onClick={() => signOut(auth)}
-                  className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+                  className="btn-dark"
                 >
                   Sign Out
                 </button>
@@ -69,7 +69,7 @@ const AppContent = ({ user, openSignIn }) => {
             ) : (
               <button
                 onClick={openSignIn}
-                className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+                className="btn-dark"
               >
                 Sign In
               </button>

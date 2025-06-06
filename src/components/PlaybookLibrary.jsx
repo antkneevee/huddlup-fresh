@@ -325,7 +325,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
               </button>
               <button
                 onClick={() => deletePlaybook(book.id)}
-                className="bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-sm"
+                className="btn-dark px-2 py-1 text-sm"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
