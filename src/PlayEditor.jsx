@@ -503,9 +503,18 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     });
   };
 
+  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
   const handleExport = async (ratio) => {
     const url = await getExportDataUrl(ratio);
     if (!url) return;
+
+    if (isIos) {
+      // iOS Safari doesn't reliably support the download attribute
+      window.open(url, "_blank");
+      return;
+    }
+
     const link = document.createElement("a");
     link.href = url;
     link.download = `${playName || "play"}.png`;
@@ -518,7 +527,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     const url = await getExportDataUrl(ratio);
 
     if (!url) return;
-    if (navigator.share && navigator.canShare) {
+    if (navigator.share && navigator.canShare && !isIos) {
       const res = await fetch(url);
       const blob = await res.blob();
       const file = new File([blob], `${playName || "play"}.png`, {
@@ -531,6 +540,21 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         console.error(e);
       }
     }
+
+    if (navigator.share && isIos) {
+      try {
+        await navigator.share({ url, title: playName || "Play" });
+        return;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    if (isIos) {
+      window.open(url, "_blank");
+      return;
+    }
+
     const link = document.createElement("a");
     link.href = url;
     link.download = `${playName || "play"}.png`;
