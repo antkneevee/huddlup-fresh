@@ -21,13 +21,13 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare }) => {
   return (
     <div className="flex flex-wrap gap-2">
       <button
-        className="flex items-center btn-dark"
+        className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
         onClick={onNewPlay}
       >
         <PlusCircle className="w-4 h-4 mr-1" /> New Play
       </button>
       <button
-        className="flex items-center btn-dark"
+        className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
         onClick={onUndo}
       >
         <RotateCcw className="w-4 h-4 mr-1" /> Undo
@@ -36,21 +36,21 @@ const Toolbar = ({ onNewPlay, onUndo, onExport, onShare }) => {
         <select
           value={aspect}
           onChange={(e) => setAspect(e.target.value)}
-          className="bg-gray-700/80 text-gray-100 p-1 rounded"
+          className="bg-gray-700 text-white p-1 rounded"
         >
           <option value="2">2.25 x 1.125</option>
           <option value="1.333">1.5 x 1.125</option>
           <option value="1">1.125 x 1.125</option>
         </select>
         <button
-          className="flex items-center btn-dark"
+          className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
           onClick={handleExportClick}
         >
           <Download className="w-4 h-4 mr-1" /> Export
         </button>
       </div>
       <button
-        className="flex items-center btn-dark"
+        className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
 
         onClick={handleShareClick}
 

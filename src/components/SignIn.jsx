@@ -43,13 +43,13 @@ const SignIn = () => {
           className="p-2 rounded text-black"
           required
         />
-        <button type="submit" className="btn-dark px-3 py-2">
+        <button type="submit" className="bg-blue-600 text-white px-3 py-2 rounded">
           {isRegister ? 'Create Account' : 'Sign In'}
         </button>
       </form>
       <button
         onClick={() => setIsRegister(!isRegister)}
-        className="text-sm text-gray-300 mt-2"
+        className="text-sm text-blue-300 mt-2"
       >
         {isRegister ? 'Already have an account?' : 'Need an account?'}
       </button>

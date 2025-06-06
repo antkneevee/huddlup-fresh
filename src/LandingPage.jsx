@@ -5,9 +5,9 @@ import playImage from './assets/test_play_for_marketing.png';
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen flex flex-col text-gray-100">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       {/* Header */}
-      <header className="w-full bg-gray-800/80 shadow">
+      <header className="w-full bg-gray-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
           <div className="flex items-center space-x-3">
             <img src={logo} alt="HuddlUp Logo" className="h-8" />
@@ -15,7 +15,7 @@ const LandingPage = () => {
           </div>
           <Link
             to="/editor"
-            className="btn-dark font-semibold px-4 py-1"
+            className="bg-[#7AC142] text-black font-semibold px-4 py-1 rounded hover:bg-[#002A5C] hover:text-white"
           >
             Get Started
           </Link>
@@ -28,32 +28,32 @@ const LandingPage = () => {
         <h2 className="text-4xl font-bold mb-4">Design. Huddle. Dominate.</h2>
         <Link
           to="/editor"
-          className="btn-dark font-semibold px-6 py-3"
+          className="bg-[#7AC142] text-black px-6 py-3 rounded font-semibold hover:bg-[#002A5C] hover:text-white transition-colors z-10"
         >
           Get Started
         </Link>
       </section>
 
       {/* Features */}
-      <section className="py-16 bg-gray-800/70">
+      <section className="py-16 bg-gray-900">
         <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 text-center">
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-gray-200">Design Plays</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Design Plays</h3>
             <p>Create and customize flag football plays with ease.</p>
           </div>
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-gray-200">Collaborate &amp; Share</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Collaborate &amp; Share</h3>
             <p>Work with your team and share strategies instantly.</p>
           </div>
           <div className="p-4">
-            <h3 className="text-xl font-semibold mb-2 text-gray-200">Win Games</h3>
+            <h3 className="text-xl font-semibold mb-2 text-[#7AC142]">Win Games</h3>
             <p>Execute your plays on the field and dominate the game.</p>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800/80 text-gray-400 text-center py-4 mt-auto">
+      <footer className="bg-gray-800 text-[#B2B7BB] text-center py-4 mt-auto">
         &copy; 2024 HuddlUp
       </footer>
     </div>

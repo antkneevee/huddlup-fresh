@@ -60,14 +60,14 @@ const SignInModal = ({ onClose }) => {
           />
           <button
             type="submit"
-            className="mt-2 px-3 py-1 btn-dark"
+            className="mt-2 px-3 py-1 rounded bg-blue-600 hover:bg-blue-500"
           >
             {isRegister ? 'Create Account' : 'Sign In'}
           </button>
         </form>
         <button
           onClick={() => setIsRegister(!isRegister)}
-          className="text-sm text-gray-300 mt-2"
+          className="text-sm text-blue-300 mt-2"
         >
           {isRegister ? 'Already have an account?' : 'Need an account?'}
         </button>

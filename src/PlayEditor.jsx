@@ -630,7 +630,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             {selectedRouteIndex !== null ? (
               <>
                 <button
-                  className="flex items-center btn-dark px-2 py-1 mb-2"
+                  className="flex items-center bg-red-600 hover:bg-red-500 px-2 py-1 rounded mb-2"
                   onClick={handleDeleteRoute}
                 >
                   <Trash2 className="w-4 h-4 mr-1" /> Delete Route
@@ -819,13 +819,13 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             />
             <button
               onClick={handleSave}
-              className="w-full btn-dark px-4 py-2"
+              className="w-full bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-white"
             >
               Save Play
             </button>
             <button
               onClick={handleSaveAs}
-              className="w-full mt-2 btn-dark px-4 py-2"
+              className="w-full mt-2 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-white"
             >
               Save As
             </button>
@@ -863,7 +863,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
               </button>
               <button
                 onClick={handleSaveAsConfirm}
-                className="px-3 py-1 btn-dark"
+                className="px-3 py-1 rounded bg-blue-600 text-white"
               >
                 Save
               </button>
@@ -879,7 +879,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             <p>Your play has been saved successfully.</p>
             <button
               onClick={() => setShowSaveModal(false)}
-              className="mt-2 btn-dark px-3 py-1"
+              className="mt-2 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded"
             >
               OK
             </button>
@@ -888,13 +888,13 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       )}
 
       {saveError && (
-        <div className="fixed top-4 right-4 bg-gray-700 text-white px-4 py-2 rounded shadow-md">
+        <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow-md">
           {saveError}
         </div>
       )}
 
       {showToast && (
-        <div className="fixed top-4 right-4 bg-gray-700 text-white px-4 py-2 rounded shadow-md">
+        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-md">
           Play saved!
         </div>
       )}

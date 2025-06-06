@@ -113,7 +113,7 @@ const AddToPlaybookModal = ({ playId, onClose }) => {
           </button>
           <button
             onClick={handleAdd}
-            className="px-3 py-1 btn-dark"
+            className="px-3 py-1 rounded bg-blue-600 text-white"
           >
             Add
           </button>

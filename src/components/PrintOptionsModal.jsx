@@ -137,7 +137,7 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
           <button onClick={onClose} className="px-3 py-1 rounded bg-gray-300">
             Cancel
           </button>
-          <button onClick={handleSubmit} className="px-3 py-1 btn-dark">
+          <button onClick={handleSubmit} className="px-3 py-1 rounded bg-blue-600 text-white">
             Print
           </button>
         </div>
