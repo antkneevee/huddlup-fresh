@@ -92,6 +92,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [saveError, setSaveError] = useState(null);
   const [saveAsName, setSaveAsName] = useState('');
   const [savedState, setSavedState] = useState(null);
+  const [unsavedChanges, setUnsavedChanges] = useState(true);
   const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
 
@@ -132,6 +133,16 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       return () => clearTimeout(timer);
     }
   }, [saveError]);
+
+  // Track if there are unsaved changes by comparing current and saved state
+  useEffect(() => {
+    if (!savedState) {
+      setUnsavedChanges(true);
+      return;
+    }
+    const current = JSON.stringify(getCurrentState());
+    setUnsavedChanges(current !== JSON.stringify(savedState));
+  }, [players, routes, notes, playName, playTags, savedState]);
 
   const handleNewPlay = () => {
     setUndoStack((prev) => [
@@ -193,6 +204,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         playData,
       );
       setSavedState(getCurrentState());
+      setUnsavedChanges(false);
+      setShowToast(true);
       setShowSaveModal(true);
     } catch (err) {
       console.error('Failed to save play', err);
@@ -237,24 +250,10 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       );
       setPlayName(newName);
       setSavedState(getCurrentState());
+      setUnsavedChanges(false);
       setShowSaveAsModal(false);
       setShowSaveModal(true);
       setShowToast(true);
-
-      setSavedState(
-        JSON.parse(
-          JSON.stringify({
-            players,
-            routes,
-            notes,
-            name: newName,
-            tags: playTags
-              .split(',')
-              .map((tag) => tag.trim())
-              .filter((tag) => tag !== ''),
-          }),
-        ),
-      );
     } catch (err) {
       console.error('Failed to save play', err);
       setSaveError('Failed to save play.');
@@ -529,21 +528,15 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     document.body.removeChild(link);
   };
 
-  const isPlaySaved = () => {
-    if (!savedState) return false;
-    return (
-      JSON.stringify(getCurrentState()) === JSON.stringify(savedState)
-    );
-  };
 
   return (
     <div className="flex flex-col bg-gray-900 text-white min-h-screen">
       <div className="w-full text-center mt-2">
         <h2 className="text-xl font-bold">{playName || "Unnamed Play"}</h2>
         <p
-          className={`text-sm ${isPlaySaved() ? "text-green-400" : "text-yellow-400"}`}
+          className={`text-sm ${unsavedChanges ? "text-yellow-400" : "text-green-400"}`}
         >
-          {isPlaySaved() ? "All changes saved" : "Unsaved changes"}
+          {unsavedChanges ? "Unsaved changes" : "All changes saved"}
         </p>
       </div>
 
