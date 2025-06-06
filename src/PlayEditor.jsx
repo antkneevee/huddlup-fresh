@@ -173,7 +173,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       const dataURL = await getExportDataUrl(4 / 3);
       const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
 
-      const playKey = `Play-${Date.now()}`;
+      const playKey = `Play-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const playData = {
         id: playKey,
         players,
@@ -222,7 +222,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     try {
       const dataURL = await getExportDataUrl(4 / 3);
       const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
-      const playKey = `Play-${Date.now()}`;
+      const playKey = `Play-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const playData = {
         id: playKey,
         players,
@@ -244,20 +244,16 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       setPlayName(newName);
       // Ensure the "Save As" modal closes before showing confirmation
       setShowSaveAsModal(false);
-      setSavedState(
-        JSON.parse(
-          JSON.stringify({
-            players,
-            routes,
-            notes,
-            name: newName,
-            tags: playTags
-              .split(',')
-              .map((tag) => tag.trim())
-              .filter((tag) => tag !== ''),
-          }),
-        ),
-      );
+      setSavedState({
+        players: JSON.parse(JSON.stringify(players)),
+        routes: JSON.parse(JSON.stringify(routes)),
+        notes: JSON.parse(JSON.stringify(notes)),
+        name: newName,
+        tags: playTags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag !== ''),
+      });
       // Refresh state to ensure UI updates correctly
       setPlayers([...players]);
       setRoutes([...routes]);
@@ -909,7 +905,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       {showSaveModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white text-black rounded p-4">
-            <h2 className="text-lg font-bold mb-2">Play Saved!</h2>
+            <h2 className="text-lg font-bold mb-2">Play saved successfully!</h2>
             <p>Your play has been saved successfully.</p>
             <button
               onClick={() => setShowSaveModal(false)}
@@ -929,7 +925,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
 
       {showToast && (
         <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-md">
-          Play saved!
+          Play saved successfully!
         </div>
       )}
     </div>

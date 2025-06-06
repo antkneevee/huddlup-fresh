@@ -11,6 +11,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [printBookId, setPrintBookId] = useState(null);
   const [playsMap, setPlaysMap] = useState({});
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -101,7 +102,6 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   };
 
   const deletePlaybook = async (id) => {
-    if (!window.confirm('Delete this playbook?')) return;
     if (auth.currentUser) {
       await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'playbooks', id));
     } else {
@@ -128,6 +128,12 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
 
   const toggleCollapse = (id) => {
     setCollapsed(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    await deletePlaybook(deleteId);
+    setDeleteId(null);
   };
 
   const handlePrint = (bookId) => {
@@ -324,7 +330,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
                 Print
               </button>
               <button
-                onClick={() => deletePlaybook(book.id)}
+                onClick={() => setDeleteId(book.id)}
                 className="bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-sm"
               >
                 <Trash2 className="w-4 h-4" />
@@ -375,6 +381,28 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       ))}
       {showPrintModal && (
         <PrintOptionsModal onClose={() => setShowPrintModal(false)} onPrint={handlePrintConfirm} />
+      )}
+      {deleteId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white text-black rounded p-4 w-full max-w-sm">
+            <h2 className="text-lg font-bold mb-2">Delete Playbook</h2>
+            <p>Are you sure you want to delete this playbook?</p>
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={() => setDeleteId(null)}
+                className="px-3 py-1 rounded bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-3 py-1 rounded bg-red-600 text-white"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
