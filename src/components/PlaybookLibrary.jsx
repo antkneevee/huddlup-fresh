@@ -135,7 +135,35 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
     setShowPrintModal(true);
   };
 
-  const handlePrintConfirm = (opts) => {
+  const stripBranding = (dataUrl) => {
+    return new Promise((resolve) => {
+      if (!dataUrl) return resolve(null);
+      const img = new Image();
+      img.onload = () => {
+        const titleH = 240;
+        const brandingH = 168;
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height - titleH - brandingH;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(
+          img,
+          0,
+          titleH,
+          img.width,
+          canvas.height,
+          0,
+          0,
+          canvas.width,
+          canvas.height,
+        );
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.src = dataUrl;
+    });
+  };
+
+  const handlePrintConfirm = async (opts) => {
     const options = opts || {};
 
     const book = playbooks.find(b => b.id === printBookId);
@@ -146,13 +174,15 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       return;
     }
 
-    const plays = book.playIds
-      .map(pid => getPlay(pid))
-      .filter(Boolean)
-      .map(p => ({
-        ...p,
-        displayImage: p.printImage || p.image,
-      }));
+    const plays = await Promise.all(
+      book.playIds
+        .map(pid => getPlay(pid))
+        .filter(Boolean)
+        .map(async (p) => ({
+          ...p,
+          displayImage: await stripBranding(p.printImage || p.image),
+        }))
+    );
 
     const w = window.open('', '_blank');
     if (!w) return;
