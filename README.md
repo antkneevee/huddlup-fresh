@@ -13,7 +13,7 @@ If you are developing a production application, we recommend using TypeScript wi
 
 ## Firebase Setup
 
-Authentication and play storage now use Firebase. Create a Firebase project and set the following environment variables in a `.env` file:
+Authentication and play storage now use Firebase. Copy `.env.example` to `.env` and set the following environment variables with your Firebase credentials:
 
 ```
 VITE_FIREBASE_API_KEY=your_api_key
