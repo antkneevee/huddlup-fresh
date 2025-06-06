@@ -78,7 +78,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
             onClick={() => onSelectPlay(play)}
           >
             <button
-              className="absolute top-1 right-1 bg-blue-600 text-white text-xs px-2 py-1 rounded"
+              className="absolute top-1 right-1 btn-dark text-xs px-2 py-1"
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedPlayId(play.id);
@@ -119,7 +119,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
         />
       )}
       {showConfirmation && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow">
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-700 text-white px-4 py-2 rounded shadow">
           Play successfully added to playbook
         </div>
       )}
