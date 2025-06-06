@@ -77,7 +77,7 @@ const AddToPlaybookModal = ({ playId, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white text-black rounded p-4 w-80">
+      <div className="bg-white text-black rounded p-4 w-full max-w-sm">
         <h2 className="text-lg font-bold mb-2">Add to Playbook</h2>
         {playbooks.length > 0 && (
           <>

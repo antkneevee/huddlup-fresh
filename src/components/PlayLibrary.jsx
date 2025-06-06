@@ -61,7 +61,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
           <option value={100}>Show 100</option>
         </select>
       </div>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {displayedPlays.map((play) => (
           <div
             key={play.id}
