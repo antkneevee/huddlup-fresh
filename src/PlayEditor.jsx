@@ -406,7 +406,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           logoImg.src = huddlupLogo;
           logoImg.onload = () => {
             const titleH = 240;
-            const brandingH = 240;
+            const brandingH = 168; // reduced by ~30% for smaller bottom label
             const canvas = document.createElement("canvas");
             canvas.width = cropW;
             canvas.height = cropH + titleH + brandingH;
@@ -443,12 +443,12 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
             ctx.fillText(playName || "Unnamed Play", cropW / 2, titleH / 2);
 
             // "made with" text and logo
-            ctx.font = "192px sans-serif";
+            ctx.font = "134px sans-serif"; // scaled with reduced branding area
             ctx.fillStyle = "#9CA3AF";
             ctx.textAlign = "left";
             const madeWith = "made with";
             const mwWidth = ctx.measureText(madeWith).width;
-            const logoHeight = 192;
+            const logoHeight = 134; // match the reduced font size
             const logoWidth = (logoImg.width * logoHeight) / logoImg.height;
             const spacing = 20;
             const rightMargin = 40;
