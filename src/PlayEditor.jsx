@@ -86,6 +86,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [playName, setPlayName] = useState("");
   const [playTags, setPlayTags] = useState("");
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showSaveAsModal, setShowSaveAsModal] = useState(false);
+  const [saveAsName, setSaveAsName] = useState('');
   const [savedState, setSavedState] = useState(null);
   const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
@@ -173,23 +175,18 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     });
   };
 
-  const handleSaveAs = async () => {
+  const handleSaveAs = () => {
     if (!auth.currentUser) {
       openSignIn();
       return;
     }
 
-    let newName = prompt("Enter a name for the new play:", playName);
-    if (newName !== null) {
-      newName = newName.trim();
-      if (newName) {
-        setPlayName(newName);
-      } else {
-        newName = playName;
-      }
-    } else {
-      newName = playName;
-    }
+    setSaveAsName(playName);
+    setShowSaveAsModal(true);
+  };
+
+  const handleSaveAsConfirm = async () => {
+    const newName = saveAsName.trim() || playName;
 
     const dataURL = await getExportDataUrl(4 / 3);
     const playKey = `Play-${Date.now()}`;
@@ -200,16 +197,18 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       notes,
       name: newName,
       tags: playTags
-        .split(",")
+        .split(',')
         .map((tag) => tag.trim())
-        .filter((tag) => tag !== ""),
+        .filter((tag) => tag !== ''),
       image: dataURL,
     };
 
     await setDoc(
-      doc(db, "users", auth.currentUser.uid, "plays", playKey),
+      doc(db, 'users', auth.currentUser.uid, 'plays', playKey),
       playData,
     );
+    setPlayName(newName);
+    setShowSaveAsModal(false);
     setShowSaveModal(true);
 
     setSavedState(
@@ -220,9 +219,9 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           notes,
           name: newName,
           tags: playTags
-            .split(",")
+            .split(',')
             .map((tag) => tag.trim())
-            .filter((tag) => tag !== ""),
+            .filter((tag) => tag !== ''),
         }),
       ),
     );
@@ -817,6 +816,34 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           />
         </div>
       </div>
+
+      {showSaveAsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white text-black rounded p-4 w-80">
+            <h2 className="text-lg font-bold mb-2">Save Play As</h2>
+            <input
+              type="text"
+              value={saveAsName}
+              onChange={(e) => setSaveAsName(e.target.value)}
+              className="w-full p-1 rounded border mb-2"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowSaveAsModal(false)}
+                className="px-3 py-1 rounded bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveAsConfirm}
+                className="px-3 py-1 rounded bg-blue-600 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showSaveModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
