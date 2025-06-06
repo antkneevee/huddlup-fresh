@@ -236,7 +236,6 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         playData,
       );
       setPlayName(newName);
-      setSavedState(getCurrentState());
       setShowSaveAsModal(false);
       setShowSaveModal(true);
       setShowToast(true);
