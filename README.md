@@ -28,3 +28,7 @@ Run `npm run setup` (or `npm ci`) to install all dependencies, then start the de
 
 Lint the project with `npm run lint`.
 
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
