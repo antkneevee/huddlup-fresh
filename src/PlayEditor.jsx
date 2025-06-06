@@ -193,7 +193,13 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         playData,
       );
       setSavedState(getCurrentState());
+      // Refresh state to ensure React re-renders and the saved label updates
+      setPlayers([...players]);
+      setRoutes([...routes]);
+      setNotes([...notes]);
+
       setShowSaveModal(true);
+      setShowToast(true);
     } catch (err) {
       console.error('Failed to save play', err);
       setSaveError('Failed to save play.');
@@ -236,10 +242,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         playData,
       );
       setPlayName(newName);
+      // Ensure the "Save As" modal closes before showing confirmation
       setShowSaveAsModal(false);
-      setShowSaveModal(true);
-      setShowToast(true);
-
       setSavedState(
         JSON.parse(
           JSON.stringify({
@@ -254,6 +258,13 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           }),
         ),
       );
+      // Refresh state to ensure UI updates correctly
+      setPlayers([...players]);
+      setRoutes([...routes]);
+      setNotes([...notes]);
+
+      setShowSaveModal(true);
+      setShowToast(true);
     } catch (err) {
       console.error('Failed to save play', err);
       setSaveError('Failed to save play.');
