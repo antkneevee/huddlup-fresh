@@ -87,6 +87,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [playTags, setPlayTags] = useState("");
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showSaveAsModal, setShowSaveAsModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [saveAsName, setSaveAsName] = useState('');
   const [savedState, setSavedState] = useState(null);
   const [defenseFormation, setDefenseFormation] = useState('No');
@@ -115,6 +116,13 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       });
     }
   }, [loadedPlay]);
+
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
 
   const handleNewPlay = () => {
     setUndoStack((prev) => [
@@ -210,6 +218,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     setPlayName(newName);
     setShowSaveAsModal(false);
     setShowSaveModal(true);
+    setShowToast(true);
 
     setSavedState(
       JSON.parse(
@@ -859,6 +868,12 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
               OK
             </button>
           </div>
+        </div>
+      )}
+
+      {showToast && (
+        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-md">
+          Play saved!
         </div>
       )}
     </div>
