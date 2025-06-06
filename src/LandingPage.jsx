@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from './assets/huddlup_logo_white_w_trans.png';
-import playImage from './assets/test_play_for_marketing.png';
+import playImage from new URL('./assets/test_play_for_marketing.png', import.meta.url);
 
 const LandingPage = () => {
   return (
