@@ -16,8 +16,8 @@ const missing = Object.entries(firebaseConfig)
   .map(([key]) => key);
 
 if (missing.length) {
-  console.warn(
-    `Firebase configuration is missing values for: ${missing.join(', ')}.\n` +
+  throw new Error(
+    `Missing Firebase configuration for: ${missing.join(', ')}.\n` +
       'Check your environment variables.'
   );
 }

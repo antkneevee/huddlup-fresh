@@ -24,6 +24,9 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 ```
 
+All of these variables are required. The application will throw an error on
+startup if any values are missing.
+
 Run `npm run setup` (or `npm ci`) to install all dependencies, then start the dev server with `npm run dev`.
 
 Lint the project with `npm run lint`.
