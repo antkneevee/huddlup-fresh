@@ -130,6 +130,17 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     setSavedState(null);
   };
 
+  const getCurrentState = () => ({
+    players: JSON.parse(JSON.stringify(players)),
+    routes: JSON.parse(JSON.stringify(routes)),
+    notes: JSON.parse(JSON.stringify(notes)),
+    name: playName,
+    tags: playTags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== ''),
+  });
+
   const handleSave = async () => {
     if (!playName.trim()) {
       alert("Please provide a name for your play.");
@@ -161,18 +172,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       doc(db, "users", auth.currentUser.uid, "plays", playKey),
       playData,
     );
+    setSavedState(getCurrentState());
     setShowSaveModal(true);
-
-    setSavedState({
-      players: JSON.parse(JSON.stringify(players)),
-      routes: JSON.parse(JSON.stringify(routes)),
-      notes: JSON.parse(JSON.stringify(notes)),
-      name: playName,
-      tags: playTags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== ""),
-    });
   };
 
   const handleSaveAs = () => {
@@ -208,23 +209,9 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       playData,
     );
     setPlayName(newName);
+    setSavedState(getCurrentState());
     setShowSaveAsModal(false);
     setShowSaveModal(true);
-
-    setSavedState(
-      JSON.parse(
-        JSON.stringify({
-          players,
-          routes,
-          notes,
-          name: newName,
-          tags: playTags
-            .split(',')
-            .map((tag) => tag.trim())
-            .filter((tag) => tag !== ''),
-        }),
-      ),
-    );
   };
 
   const handleUndo = () => {
@@ -496,19 +483,9 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
 
   const isPlaySaved = () => {
     if (!savedState) return false;
-    const sanitize = (data) => JSON.parse(JSON.stringify(data));
-    const currentState = JSON.stringify({
-      players: sanitize(players),
-      routes: sanitize(routes),
-      notes: sanitize(notes),
-      name: playName,
-      tags: playTags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== ""),
-    });
-    const savedStateString = JSON.stringify(sanitize(savedState));
-    return currentState === savedStateString;
+    return (
+      JSON.stringify(getCurrentState()) === JSON.stringify(savedState)
+    );
   };
 
   return (
