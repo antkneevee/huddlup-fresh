@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Konva from 'konva';
 import {
   Stage,
@@ -98,9 +98,23 @@ const FootballField = ({
   };
 
   const localStageRef = useRef(null);
+  const containerRef = useRef(null);
   const layerRef = useRef(null);
   const indicatorRef = useRef(null);
   const animRef = useRef(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (!containerRef.current) return;
+      const availableWidth = containerRef.current.offsetWidth;
+      const newScale = Math.min(1, availableWidth / width);
+      setScale(newScale);
+    };
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   useEffect(() => {
     if (localStageRef.current && stageRef) {
@@ -240,10 +254,13 @@ const FootballField = ({
   };
 
   return (
+    <div ref={containerRef} className="w-full overflow-x-auto">
     <Stage
       ref={localStageRef}
       width={width}
       height={height}
+      scaleX={scale}
+      scaleY={scale}
       className="bg-white border border-gray-300"
       onClick={handleStageClick}
     >
@@ -471,6 +488,7 @@ const FootballField = ({
         ))}
       </Layer>
     </Stage>
+    </div>
   );
 };
 
