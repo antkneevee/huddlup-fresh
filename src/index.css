@@ -1,1 +1,12 @@
 @import "tailwindcss";
+.hero {
+  background-color: #000;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.03) 2px,
+    transparent 2px,
+    transparent 10px
+  );
+  background-size: 20px 20px;
+}

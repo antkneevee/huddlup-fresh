@@ -6,7 +6,8 @@ import PlayEditor from './PlayEditor';
 import PlayLibrary from './components/PlayLibrary';
 import PlaybookLibrary from './components/PlaybookLibrary';
 import SignInModal from './components/SignInModal';
-import logo from './assets/huddlup_logo_2.svg';
+import logo from './assets/huddlup_logo_white_w_trans.png';
+import LandingPage from './LandingPage';
 import { Home, Book, BookOpen } from 'lucide-react';
 
 const AppContent = ({ user, openSignIn }) => {
@@ -29,6 +30,12 @@ const AppContent = ({ user, openSignIn }) => {
             <h1 className="text-xl font-bold">huddlup</h1>
           </div>
           <nav className="flex flex-wrap gap-2 items-center">
+            <Link
+              to="/landing"
+              className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+            >
+              Home
+            </Link>
             <Link
               to="/"
               className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
@@ -73,6 +80,7 @@ const AppContent = ({ user, openSignIn }) => {
       {/* Main Content */}
       <main className="flex-grow">
         <Routes>
+          <Route path="/landing" element={<LandingPage />} />
           <Route
             path="/"
             element={<PlayEditor loadedPlay={selectedPlay} openSignIn={openSignIn} />}
