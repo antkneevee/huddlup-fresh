@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import { X } from 'lucide-react';
-import logo from '../assets/huddlup_logo_2.svg';
+import logo from '../assets/huddlup_logo_white_w_trans.png';
 
 const SignInModal = ({ onClose }) => {
   const [isRegister, setIsRegister] = useState(false);
