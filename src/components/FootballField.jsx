@@ -196,8 +196,10 @@ const FootballField = ({
       setUndoStack((prev) => [
         ...prev,
         {
-          routes: JSON.parse(JSON.stringify(routes))
-        }
+          players: JSON.parse(JSON.stringify(players)),
+          routes: JSON.parse(JSON.stringify(routes)),
+          notes: JSON.parse(JSON.stringify(notes)),
+        },
       ]);
 
       let newRoutes = [...routes];
