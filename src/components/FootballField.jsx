@@ -67,20 +67,20 @@ const FootballField = ({
 
   const getDefensePositions = (formation) => {
     if (!formation || formation === 'No') return [];
-    const rowSpacing = 60;
+    const rowSpacing = 90;
     let rows;
     switch (formation) {
       case '1-3-1':
         rows = [1, 3, 1];
         break;
       case '3-2':
-        rows = [3, 2];
+        rows = [2, 3];
         break;
       case '4-1':
-        rows = [4, 1];
+        rows = [1, 4];
         break;
       case '2-3':
-        rows = [2, 3];
+        rows = [3, 2];
         break;
       default:
         return [];
@@ -389,7 +389,7 @@ const FootballField = ({
                 x={0}
                 y={0}
                 radius={40}
-                stroke="yellow"
+                stroke="#FFA500"
                 strokeWidth={3}
                 dash={[10, 5]}
                 listening={false}
@@ -460,7 +460,7 @@ const FootballField = ({
               x={0}
               y={0}
               sides={3}
-              radius={25}
+              radius={30}
               fill="#6B7280"
               rotation={180}
               cornerRadius={5}
