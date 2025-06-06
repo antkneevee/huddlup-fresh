@@ -13,11 +13,25 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
   const [playsMap, setPlaysMap] = useState({});
 
   useEffect(() => {
-    if (!auth.currentUser) {
-      openSignIn();
-      return;
-    }
     const fetchBooks = async () => {
+      if (!auth.currentUser) {
+        openSignIn();
+        const books = [];
+        for (const key in localStorage) {
+          if (key.startsWith('Playbook-')) {
+            try {
+              const book = JSON.parse(localStorage.getItem(key));
+              books.push(book);
+            } catch (e) {
+              // ignore malformed data
+            }
+          }
+        }
+        books.sort((a, b) => (a.order || 0) - (b.order || 0));
+        setPlaybooks(books);
+        return;
+      }
+
       const snap = await getDocs(
         collection(db, 'users', auth.currentUser.uid, 'playbooks')
       );
