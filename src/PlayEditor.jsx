@@ -89,6 +89,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showSaveAsModal, setShowSaveAsModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [saveError, setSaveError] = useState(null);
   const [saveAsName, setSaveAsName] = useState('');
   const [savedState, setSavedState] = useState(null);
   const [defenseFormation, setDefenseFormation] = useState('No');
@@ -124,6 +125,13 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       return () => clearTimeout(timer);
     }
   }, [showToast]);
+
+  useEffect(() => {
+    if (saveError) {
+      const timer = setTimeout(() => setSaveError(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveError]);
 
   const handleNewPlay = () => {
     setUndoStack((prev) => [
@@ -161,30 +169,35 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       return;
     }
 
-    const dataURL = await getExportDataUrl(4 / 3);
-    const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
+    try {
+      const dataURL = await getExportDataUrl(4 / 3);
+      const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
 
-    const playKey = `Play-${Date.now()}`;
-    const playData = {
-      id: playKey,
-      players,
-      routes,
-      notes,
-      name: playName,
-      tags: playTags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== ""),
-      image: dataURL,
-      printImage: printURL,
-    };
+      const playKey = `Play-${Date.now()}`;
+      const playData = {
+        id: playKey,
+        players,
+        routes,
+        notes,
+        name: playName,
+        tags: playTags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag !== ''),
+        image: dataURL,
+        printImage: printURL,
+      };
 
-    await setDoc(
-      doc(db, "users", auth.currentUser.uid, "plays", playKey),
-      playData,
-    );
-    setSavedState(getCurrentState());
-    setShowSaveModal(true);
+      await setDoc(
+        doc(db, 'users', auth.currentUser.uid, 'plays', playKey),
+        playData,
+      );
+      setSavedState(getCurrentState());
+      setShowSaveModal(true);
+    } catch (err) {
+      console.error('Failed to save play', err);
+      setSaveError('Failed to save play.');
+    }
   };
 
   const handleSaveAs = () => {
@@ -200,47 +213,52 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const handleSaveAsConfirm = async () => {
     const newName = saveAsName.trim() || playName;
 
-    const dataURL = await getExportDataUrl(4 / 3);
-    const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
-    const playKey = `Play-${Date.now()}`;
-    const playData = {
-      id: playKey,
-      players,
-      routes,
-      notes,
-      name: newName,
-      tags: playTags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter((tag) => tag !== ''),
-      image: dataURL,
-      printImage: printURL,
-    };
+    try {
+      const dataURL = await getExportDataUrl(4 / 3);
+      const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
+      const playKey = `Play-${Date.now()}`;
+      const playData = {
+        id: playKey,
+        players,
+        routes,
+        notes,
+        name: newName,
+        tags: playTags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag !== ''),
+        image: dataURL,
+        printImage: printURL,
+      };
 
-    await setDoc(
-      doc(db, 'users', auth.currentUser.uid, 'plays', playKey),
-      playData,
-    );
-    setPlayName(newName);
-    setSavedState(getCurrentState());
-    setShowSaveAsModal(false);
-    setShowSaveModal(true);
-    setShowToast(true);
+      await setDoc(
+        doc(db, 'users', auth.currentUser.uid, 'plays', playKey),
+        playData,
+      );
+      setPlayName(newName);
+      setSavedState(getCurrentState());
+      setShowSaveAsModal(false);
+      setShowSaveModal(true);
+      setShowToast(true);
 
-    setSavedState(
-      JSON.parse(
-        JSON.stringify({
-          players,
-          routes,
-          notes,
-          name: newName,
-          tags: playTags
-            .split(',')
-            .map((tag) => tag.trim())
-            .filter((tag) => tag !== ''),
-        }),
-      ),
-    );
+      setSavedState(
+        JSON.parse(
+          JSON.stringify({
+            players,
+            routes,
+            notes,
+            name: newName,
+            tags: playTags
+              .split(',')
+              .map((tag) => tag.trim())
+              .filter((tag) => tag !== ''),
+          }),
+        ),
+      );
+    } catch (err) {
+      console.error('Failed to save play', err);
+      setSaveError('Failed to save play.');
+    }
 
   };
 
@@ -866,6 +884,12 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
               OK
             </button>
           </div>
+        </div>
+      )}
+
+      {saveError && (
+        <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow-md">
+          {saveError}
         </div>
       )}
 
