@@ -24,7 +24,7 @@ const AppContent = ({ user, openSignIn }) => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       {/* Header */}
-      {location.pathname !== '/landing' && (
+      {location.pathname !== '/landing' && location.pathname !== '/' && (
       <header className="w-full bg-gray-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
           <div className="flex items-center space-x-3">
