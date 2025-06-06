@@ -25,7 +25,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
       setPlays(arr);
     };
     fetchPlays();
-  }, [user, openSignIn]);
+  }, [user]);
 
   if (!auth.currentUser) {
     return <div className="p-4">Please sign in to view your plays.</div>;

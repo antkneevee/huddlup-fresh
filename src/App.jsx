@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
@@ -113,7 +113,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [showSignInModal, setShowSignInModal] = useState(false);
 
-  const openSignIn = () => setShowSignInModal(true);
+  const openSignIn = useCallback(() => setShowSignInModal(true), []);
 
 
   useEffect(() => {

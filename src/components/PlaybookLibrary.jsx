@@ -41,7 +41,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       setPlaybooks(arr);
     };
     fetchBooks();
-  }, [user, openSignIn]);
+  }, [user]);
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -59,7 +59,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       setPlaysMap(obj);
     };
     fetchPlays();
-  }, [user, openSignIn]);
+  }, [user]);
 
   if (!auth.currentUser) {
     return <div className="p-4">Please sign in to view your playbooks.</div>;
