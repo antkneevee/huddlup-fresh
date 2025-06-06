@@ -65,36 +65,41 @@ const FootballField = ({
   const lineOfScrimmageY = height - 250;
   const yardLineSpacing = 55;
 
+  const defenseDefaults = {
+    '1-3-1': [
+      { x: 400, y: 80 },
+      { x: 200, y: 170 },
+      { x: 400, y: 170 },
+      { x: 600, y: 170 },
+      { x: 400, y: 260 },
+    ],
+    '3-2': [
+      { x: 266.67, y: 170 },
+      { x: 533.33, y: 170 },
+      { x: 200, y: 260 },
+      { x: 400, y: 260 },
+      { x: 600, y: 260 },
+    ],
+    '4-1': [
+      { x: 400, y: 170 },
+      { x: 160, y: 260 },
+      { x: 320, y: 260 },
+      { x: 480, y: 260 },
+      { x: 640, y: 260 },
+    ],
+    '2-3': [
+      { x: 200, y: 170 },
+      { x: 400, y: 170 },
+      { x: 600, y: 170 },
+      { x: 266.67, y: 260 },
+      { x: 533.33, y: 260 },
+    ],
+  };
+
   const getDefensePositions = (formation) => {
     if (!formation || formation === 'No') return [];
-    const rowSpacing = 90;
-    let rows;
-    switch (formation) {
-      case '1-3-1':
-        rows = [1, 3, 1];
-        break;
-      case '3-2':
-        rows = [2, 3];
-        break;
-      case '4-1':
-        rows = [1, 4];
-        break;
-      case '2-3':
-        rows = [3, 2];
-        break;
-      default:
-        return [];
-    }
-    const startY = lineOfScrimmageY - rows.length * rowSpacing;
-    const positions = [];
-    rows.forEach((count, rIdx) => {
-      const y = startY + rIdx * rowSpacing;
-      const spacing = width / (count + 1);
-      for (let i = 0; i < count; i++) {
-        positions.push({ x: spacing * (i + 1), y });
-      }
-    });
-    return positions;
+    const defaults = defenseDefaults[formation];
+    return defaults ? defaults.map((p) => ({ ...p })) : [];
   };
 
   const localStageRef = useRef(null);
@@ -483,6 +488,17 @@ const FootballField = ({
               fill="#6B7280"
               rotation={180}
               cornerRadius={5}
+            />
+            <Text
+              text="D"
+              fontSize={24}
+              fill="white"
+              fontStyle="bold"
+              align="center"
+              offsetX={12}
+              offsetY={12}
+              x={3}
+              y={4}
             />
           </Group>
         ))}
