@@ -72,7 +72,7 @@ const AddToPlaybookModal = ({ playId, onClose }) => {
         }
       }
     }
-    onClose();
+    onClose(true);
   };
 
   return (

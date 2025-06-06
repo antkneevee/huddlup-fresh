@@ -9,6 +9,7 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedPlayId, setSelectedPlayId] = useState(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -39,6 +40,14 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
   });
 
   const displayedPlays = filteredPlays.slice(0, itemsPerPage);
+
+  const handleAddModalClose = (success) => {
+    setShowAddModal(false);
+    if (success) {
+      setShowConfirmation(true);
+      setTimeout(() => setShowConfirmation(false), 2000);
+    }
+  };
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
@@ -106,8 +115,13 @@ const PlayLibrary = ({ onSelectPlay, user, openSignIn }) => {
       {showAddModal && (
         <AddToPlaybookModal
           playId={selectedPlayId}
-          onClose={() => setShowAddModal(false)}
+          onClose={handleAddModalClose}
         />
+      )}
+      {showConfirmation && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded shadow">
+          Play added to playbook
+        </div>
       )}
     </div>
   );
