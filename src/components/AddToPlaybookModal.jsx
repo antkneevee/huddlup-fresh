@@ -106,7 +106,7 @@ const AddToPlaybookModal = ({ playId, onClose }) => {
         />
         <div className="flex justify-end gap-2 mt-2">
           <button
-            onClick={onClose}
+            onClick={() => onClose(false)}
             className="px-3 py-1 rounded bg-gray-300"
           >
             Cancel
