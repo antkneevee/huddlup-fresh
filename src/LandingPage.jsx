@@ -14,7 +14,7 @@ const LandingPage = () => {
             <h1 className="text-xl font-bold">huddlup</h1>
           </div>
           <Link
-            to="/"
+            to="/editor"
             className="bg-[#7AC142] text-black font-semibold px-4 py-1 rounded hover:bg-[#002A5C] hover:text-white"
           >
             Get Started
@@ -27,7 +27,7 @@ const LandingPage = () => {
         <img src={playImage} alt="Play Design" className="max-w-md mb-6 z-10" />
         <h2 className="text-4xl font-bold mb-4">Design. Huddle. Dominate.</h2>
         <Link
-          to="/"
+          to="/editor"
           className="bg-[#7AC142] text-black px-6 py-3 rounded font-semibold hover:bg-[#002A5C] hover:text-white transition-colors z-10"
         >
           Get Started

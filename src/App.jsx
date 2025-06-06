@@ -17,7 +17,7 @@ const AppContent = ({ user, openSignIn }) => {
 
   const handleLoadPlay = (play) => {
     setSelectedPlay(play);
-    navigate('/');  // Use navigate to stay within SPA and preserve state
+    navigate('/editor');  // Use navigate to stay within SPA and preserve state
   };
 
   return (
@@ -31,13 +31,13 @@ const AppContent = ({ user, openSignIn }) => {
           </div>
           <nav className="flex flex-wrap gap-2 items-center">
             <Link
-              to="/landing"
+              to="/"
               className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
             >
               Home
             </Link>
             <Link
-              to="/"
+              to="/editor"
               className="flex items-center bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
             >
               <Home className="w-4 h-4 mr-1" /> Editor
@@ -80,9 +80,10 @@ const AppContent = ({ user, openSignIn }) => {
       {/* Main Content */}
       <main className="flex-grow">
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route
-            path="/"
+            path="/editor"
             element={<PlayEditor loadedPlay={selectedPlay} openSignIn={openSignIn} />}
           />
           <Route
