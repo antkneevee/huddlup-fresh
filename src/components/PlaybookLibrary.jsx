@@ -324,9 +324,9 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
                       </button>
                     </div>
 
-                    {play.displayImage ? (
+                    {play.displayImage || play.image ? (
                       <img
-                        src={play.displayImage}
+                        src={play.displayImage || play.image}
                         alt={play.name}
                         className="w-full h-40 object-contain rounded mb-2 bg-white"
                       />
