@@ -5,6 +5,7 @@ import FootballField from "./components/FootballField";
 import Toolbar from "./components/Toolbar";
 import { User, ArrowRight, Trash2, StickyNote } from "lucide-react";
 import huddlupLogo from "./assets/huddlup_logo_2.svg";
+import { THICKNESS_MULTIPLIER } from "./components/PrintOptionsModal";
 
 const width = 800;
 const height = 600;
@@ -161,6 +162,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     }
 
     const dataURL = await getExportDataUrl(4 / 3);
+    const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
 
     const playKey = `Play-${Date.now()}`;
     const playData = {
@@ -174,6 +176,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         .map((tag) => tag.trim())
         .filter((tag) => tag !== ""),
       image: dataURL,
+      printImage: printURL,
     };
 
     await setDoc(
@@ -198,6 +201,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     const newName = saveAsName.trim() || playName;
 
     const dataURL = await getExportDataUrl(4 / 3);
+    const printURL = await getExportDataUrl(4 / 3, THICKNESS_MULTIPLIER);
     const playKey = `Play-${Date.now()}`;
     const playData = {
       id: playKey,
@@ -210,6 +214,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         .map((tag) => tag.trim())
         .filter((tag) => tag !== ''),
       image: dataURL,
+      printImage: printURL,
     };
 
     await setDoc(
