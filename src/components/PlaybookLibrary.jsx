@@ -146,7 +146,13 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
       return;
     }
 
-    const plays = book.playIds.map(pid => getPlay(pid)).filter(Boolean);
+    const plays = book.playIds
+      .map(pid => getPlay(pid))
+      .filter(Boolean)
+      .map(p => ({
+        ...p,
+        displayImage: p.printImage || p.image,
+      }));
 
     const w = window.open('', '_blank');
     if (!w) return;
@@ -212,7 +218,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
             if (includeTitle) w.document.write(`<div class="title">${play.name}</div>`);
             w.document.write('</div>');
           }
-          if (play.image) w.document.write(`<img src="${play.image}" />`);
+          if (play.displayImage) w.document.write(`<img src="${play.displayImage}" />`);
           w.document.write('</div>');
         });
         w.document.write('</div>');
@@ -230,7 +236,7 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
             if (includeTitle) w.document.write(`<div class="title">${play.name}</div>`);
             w.document.write('</div>');
           }
-          if (play.image) w.document.write(`<img src="${play.image}" />`);
+          if (play.displayImage) w.document.write(`<img src="${play.displayImage}" />`);
           w.document.write('</div>');
         });
         w.document.write('</div>');
@@ -318,9 +324,9 @@ const PlaybookLibrary = ({ user, openSignIn }) => {
                       </button>
                     </div>
 
-                    {play.image ? (
+                    {play.displayImage ? (
                       <img
-                        src={play.image}
+                        src={play.displayImage}
                         alt={play.name}
                         className="w-full h-40 object-contain rounded mb-2 bg-white"
                       />
