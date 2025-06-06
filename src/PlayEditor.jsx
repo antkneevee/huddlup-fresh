@@ -522,7 +522,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         </p>
       </div>
 
-      <main className="flex flex-row items-start mt-4 px-4 w-full max-w-7xl mx-auto gap-4">
+      <main className="flex flex-col lg:flex-row items-start mt-4 px-4 w-full max-w-7xl mx-auto gap-4">
+        <div className="overflow-x-auto">
         <FootballField
           players={players}
           setPlayers={setPlayers}
@@ -541,8 +542,9 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           stageRef={stageRef}
           defenseFormation={defenseFormation}
         />
+        </div>
 
-        <div className="flex flex-col gap-4 w-60">
+        <div className="flex flex-col gap-4 w-full lg:w-60">
           {/* Player Editor */}
           <aside className="bg-gray-800 p-4 rounded">
             <h2 className="text-lg font-bold flex items-center mb-2">
@@ -819,7 +821,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
 
       {showSaveAsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white text-black rounded p-4 w-80">
+          <div className="bg-white text-black rounded p-4 w-full max-w-sm">
             <h2 className="text-lg font-bold mb-2">Save Play As</h2>
             <input
               type="text"

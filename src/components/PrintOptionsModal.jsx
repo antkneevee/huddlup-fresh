@@ -66,7 +66,7 @@ const PrintOptionsModal = ({ onClose, onPrint }) => {
                 <option value="8">8 plays</option>
               </select>
             </div>
-            <div className="mb-2 grid grid-cols-2 gap-2">
+            <div className="mb-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div>
                 <label className="block mb-1">Width</label>
                 <select
