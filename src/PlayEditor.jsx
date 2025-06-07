@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { auth, db } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 import FootballField from "./components/FootballField";
@@ -99,6 +99,16 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
 
+  const currentState = useMemo(
+    () => getCurrentState(),
+    [players, routes, notes, playName, playTags],
+  );
+
+  const statesMatch = useMemo(
+    () => savedState && JSON.stringify(currentState) === JSON.stringify(savedState),
+    [currentState, savedState],
+  );
+
   // Treat the initial state as saved so the indicator starts clean
   useEffect(() => {
     setSavedState(getCurrentState());
@@ -148,11 +158,11 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       setIsSaved(false);
       return;
     }
-    const current = getCurrentState();
-    setIsSaved(
-      JSON.stringify(current) === JSON.stringify(savedState),
-    );
-  }, [players, routes, notes, playName, playTags, savedState]);
+    setIsSaved(statesMatch);
+    if (!statesMatch) {
+      console.log('State mismatch', { current: currentState, savedState });
+    }
+  }, [statesMatch, savedState, currentState]);
 
   // Warn users before leaving the page if there are unsaved changes
   useEffect(() => {
