@@ -195,7 +195,10 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         doc(db, 'users', auth.currentUser.uid, 'plays', playKey),
         playData,
       );
-      setSavedState(getCurrentState());
+
+      const newState = getCurrentState();
+      setSavedState(newState);
+
       // Refresh state to ensure React re-renders and the saved label updates
       setPlayers([...players]);
       setRoutes([...routes]);
@@ -247,7 +250,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       setPlayName(newName);
       // Ensure the "Save As" modal closes before showing confirmation
       setShowSaveAsModal(false);
-      setSavedState({
+
+      const newState = {
         players: JSON.parse(JSON.stringify(players)),
         routes: JSON.parse(JSON.stringify(routes)),
         notes: JSON.parse(JSON.stringify(notes)),
@@ -256,7 +260,8 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           .split(',')
           .map((tag) => tag.trim())
           .filter((tag) => tag !== ''),
-      });
+      };
+      setSavedState(newState);
       // Refresh state to ensure UI updates correctly
       setPlayers([...players]);
       setRoutes([...routes]);
