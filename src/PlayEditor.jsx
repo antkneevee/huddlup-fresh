@@ -99,6 +99,11 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
 
+  // Treat the initial state as saved so the indicator starts clean
+  useEffect(() => {
+    setSavedState(getCurrentState());
+  }, []);
+
   useEffect(() => {
     setUndoStack([
       { players: [...initialPlayersTemplate], routes: [], notes: [] },
@@ -149,6 +154,20 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     );
   }, [players, routes, notes, playName, playTags, savedState]);
 
+  // Warn users before leaving the page if there are unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!isSaved) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isSaved]);
+
   const handleNewPlay = () => {
     setUndoStack((prev) => [
       ...prev,
@@ -163,16 +182,18 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     setSavedState(null);
   };
 
-  const getCurrentState = () => ({
-    players: JSON.parse(JSON.stringify(players)),
-    routes: JSON.parse(JSON.stringify(routes)),
-    notes: JSON.parse(JSON.stringify(notes)),
-    name: playName,
-    tags: playTags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== ''),
-  });
+  function getCurrentState() {
+    return {
+      players: JSON.parse(JSON.stringify(players)),
+      routes: JSON.parse(JSON.stringify(routes)),
+      notes: JSON.parse(JSON.stringify(notes)),
+      name: playName,
+      tags: playTags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== ''),
+    };
+  }
 
   const handleSave = async () => {
     if (!playName.trim()) {
