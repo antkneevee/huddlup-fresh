@@ -6,6 +6,7 @@ import Toolbar from "./components/Toolbar";
 import SaveAsModal from "./components/SaveAsModal";
 import SaveModal from "./components/SaveModal";
 import Toast from "./components/Toast";
+import ModalPortal from "./components/ModalPortal";
 import { User, ArrowRight, Trash2, StickyNote } from "lucide-react";
 import huddlupLogo from "./assets/huddlup_logo_2.svg";
 import { THICKNESS_MULTIPLIER } from "./components/PrintOptionsModal";
@@ -932,7 +933,11 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         />
       )}
 
-      {showSaveModal && <SaveModal onClose={() => setShowSaveModal(false)} />}
+      {showSaveModal && (
+        <ModalPortal>
+          <SaveModal onClose={() => setShowSaveModal(false)} />
+        </ModalPortal>
+      )}
 
       {saveError && (
         <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow-md">
@@ -940,7 +945,11 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         </div>
       )}
 
-      {showToast && <Toast message="Play saved to library!" />}
+      {showToast && (
+        <ModalPortal>
+          <Toast message="Play saved to library!" />
+        </ModalPortal>
+      )}
     </div>
   );
 };
