@@ -232,6 +232,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
 
       const newState = getCurrentState();
       setSavedState(newState);
+      setIsSaved(true); // Immediately reflect saved state in UI
 
       // Refresh state to ensure React re-renders and the saved label updates
       setPlayers([...players]);
@@ -296,6 +297,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
           .filter((tag) => tag !== ''),
       };
       setSavedState(newState);
+      setIsSaved(true); // Immediately reflect saved state in UI
       // Refresh state to ensure UI updates correctly
       setPlayers([...players]);
       setRoutes([...routes]);
