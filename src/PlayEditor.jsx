@@ -95,6 +95,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
   const [saveError, setSaveError] = useState(null);
   const [saveAsName, setSaveAsName] = useState('');
   const [savedState, setSavedState] = useState(null);
+  const [isSaved, setIsSaved] = useState(false);
   const [defenseFormation, setDefenseFormation] = useState('No');
   const stageRef = useRef(null);
 
@@ -135,6 +136,18 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       return () => clearTimeout(timer);
     }
   }, [saveError]);
+
+  // Keep track of whether the current state matches the last saved snapshot
+  useEffect(() => {
+    if (!savedState) {
+      setIsSaved(false);
+      return;
+    }
+    const current = getCurrentState();
+    setIsSaved(
+      JSON.stringify(current) === JSON.stringify(savedState),
+    );
+  }, [players, routes, notes, playName, playTags, savedState]);
 
   const handleNewPlay = () => {
     setUndoStack((prev) => [
@@ -567,12 +580,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
     document.body.removeChild(link);
   };
 
-  const isPlaySaved = () => {
-    if (!savedState) return false;
-    return (
-      JSON.stringify(getCurrentState()) === JSON.stringify(savedState)
-    );
-  };
+  const isPlaySaved = () => isSaved;
 
   return (
     <div className="flex flex-col bg-gray-900 text-white min-h-screen">
