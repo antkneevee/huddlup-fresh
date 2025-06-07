@@ -928,7 +928,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         </div>
       )}
 
-      {showToast && <Toast message="Play saved successfully!" />}
+      {showToast && <Toast message="Play saved to library!" />}
     </div>
   );
 };
