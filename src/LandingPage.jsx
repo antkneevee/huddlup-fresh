@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from './assets/huddlup_logo_white_w_trans.png';
 import playImage from './assets/test_play_for_marketing.png';
+import playbookBg from './assets/playbook_bg.png';
 
 const LandingPage = () => {
   return (
@@ -23,7 +24,14 @@ const LandingPage = () => {
       </header>
 
       {/* Hero */}
-      <section className="hero flex flex-col items-center justify-center text-center py-20 relative bg-[repeating-linear-gradient(135deg,#1f2937_0px,#1f2937_10px,#111827_10px,#111827_20px)]">
+      <section
+        className="hero flex flex-col items-center justify-center text-center py-20 relative"
+        style={{
+          backgroundImage: `url(${playbookBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
         <img src={playImage} alt="Play Design" className="max-w-md mb-6 z-10" />
         <h2 className="text-4xl font-bold mb-4">Design. Huddle. Dominate.</h2>
         <Link
