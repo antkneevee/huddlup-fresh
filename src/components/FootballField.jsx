@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import useDefensePositions from '../hooks/useDefensePositions';
 import Konva from 'konva';
 import {
   Stage,
@@ -65,42 +66,7 @@ const FootballField = ({
   const lineOfScrimmageY = height - 250;
   const yardLineSpacing = 55;
 
-  const defenseDefaults = {
-    '1-3-1': [
-      { x: 400, y: 80 },
-      { x: 200, y: 170 },
-      { x: 400, y: 170 },
-      { x: 600, y: 170 },
-      { x: 400, y: 260 },
-    ],
-    '3-2': [
-      { x: 266.67, y: 170 },
-      { x: 533.33, y: 170 },
-      { x: 200, y: 260 },
-      { x: 400, y: 260 },
-      { x: 600, y: 260 },
-    ],
-    '4-1': [
-      { x: 400, y: 170 },
-      { x: 160, y: 260 },
-      { x: 320, y: 260 },
-      { x: 480, y: 260 },
-      { x: 640, y: 260 },
-    ],
-    '2-3': [
-      { x: 200, y: 170 },
-      { x: 400, y: 170 },
-      { x: 600, y: 170 },
-      { x: 266.67, y: 260 },
-      { x: 533.33, y: 260 },
-    ],
-  };
-
-  const getDefensePositions = (formation) => {
-    if (!formation || formation === 'No') return [];
-    const defaults = defenseDefaults[formation];
-    return defaults ? defaults.map((p) => ({ ...p })) : [];
-  };
+  const defensePositions = useDefensePositions(defenseFormation);
 
   const localStageRef = useRef(null);
   const containerRef = useRef(null);
@@ -184,7 +150,6 @@ const FootballField = ({
     return { x: newX, y: newY };
   };
 
-  const defensePositions = getDefensePositions(defenseFormation);
 
   const handleDragEnd = (e, index) => {
     const updatedPlayers = [...players];

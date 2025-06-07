@@ -3,6 +3,9 @@ import { auth, db } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 import FootballField from "./components/FootballField";
 import Toolbar from "./components/Toolbar";
+import SaveAsModal from "./components/SaveAsModal";
+import SaveModal from "./components/SaveModal";
+import Toast from "./components/Toast";
 import { User, ArrowRight, Trash2, StickyNote } from "lucide-react";
 import huddlupLogo from "./assets/huddlup_logo_2.svg";
 import { THICKNESS_MULTIPLIER } from "./components/PrintOptionsModal";
@@ -875,47 +878,15 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
       </div>
 
       {showSaveAsModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white text-black rounded p-4 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-2">Save Play As</h2>
-            <input
-              type="text"
-              value={saveAsName}
-              onChange={(e) => setSaveAsName(e.target.value)}
-              className="w-full p-1 rounded border mb-2"
-            />
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setShowSaveAsModal(false)}
-                className="px-3 py-1 rounded bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveAsConfirm}
-                className="px-3 py-1 rounded bg-blue-600 text-white"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
+        <SaveAsModal
+          value={saveAsName}
+          onChange={setSaveAsName}
+          onCancel={() => setShowSaveAsModal(false)}
+          onSave={handleSaveAsConfirm}
+        />
       )}
 
-      {showSaveModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white text-black rounded p-4">
-            <h2 className="text-lg font-bold mb-2">Play saved successfully!</h2>
-            <p>Your play has been saved successfully.</p>
-            <button
-              onClick={() => setShowSaveModal(false)}
-              className="mt-2 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded"
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
+      {showSaveModal && <SaveModal onClose={() => setShowSaveModal(false)} />}
 
       {saveError && (
         <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded shadow-md">
@@ -923,11 +894,7 @@ const PlayEditor = ({ loadedPlay, openSignIn }) => {
         </div>
       )}
 
-      {showToast && (
-        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-md">
-          Play saved successfully!
-        </div>
-      )}
+      {showToast && <Toast message="Play saved successfully!" />}
     </div>
   );
 };
